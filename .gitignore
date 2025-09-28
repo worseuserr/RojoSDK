@@ -2,4 +2,4 @@
 build/*
 tools/*.txt
 __pycache__/
-!**/.gitkeep
+!.gitkeep
