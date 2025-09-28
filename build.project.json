@@ -1,0 +1,35 @@
+{
+	"name": "project",
+	"tree": {
+		"$className": "DataModel",
+		"ReplicatedStorage": {
+			"$className": "ReplicatedStorage",
+			"$ignoreUnknownInstances": true,
+			"$path": "build/ReplicatedStorage"
+		},
+		"ServerScriptService": {
+			"$className": "ServerScriptService",
+			"$ignoreUnknownInstances": true,
+			"$path": "build/ServerScriptService"
+		},
+		"ServerStorage": {
+			"$className": "ServerStorage",
+			"$ignoreUnknownInstances": true,
+			"$path": "build/ServerStorage"
+		},
+		"StarterPlayer": {
+			"$className": "StarterPlayer",
+			"StarterCharacterScripts": {
+				"$className": "StarterCharacterScripts",
+				"$ignoreUnknownInstances": true,
+				"$path": "build/StarterPlayer/StarterCharacterScripts"
+			},
+			"StarterPlayerScripts": {
+				"$className": "StarterPlayerScripts",
+				"$ignoreUnknownInstances": true,
+				"$path": "build/StarterPlayer/StarterPlayerScripts"
+			},
+			"$ignoreUnknownInstances": true
+		}
+	}
+}
