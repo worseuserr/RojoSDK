@@ -1,15 +1,16 @@
 import os, sys
+from os.path import join
 from tools.Shell import Shell
 from tools.Output import Output
 from tools.Build import Build
-from tools.Constants import BUILD, C_BAD,CONFIG_FILE,SETUP_FILE,FORCE_ALT,FORCE_FLAG,SKIP_ALT,SKIP_FLAG,VERBOSE_ALT,VERBOSE_FLAG,C_EMPHASIS
+from tools.Constants import C_BAD,CONFIG_FILE,SETUP_FILE,FORCE_ALT,FORCE_FLAG,SKIP_ALT,SKIP_FLAG,VERBOSE_ALT,VERBOSE_FLAG,C_EMPHASIS
 
 # INIT
 
 argv = Shell.SplitFlags(sys.argv)
 
-config = Shell.ReadConfig("./" + CONFIG_FILE)
-isFirstLaunch = not os.path.exists("./" + SETUP_FILE)
+config = Shell.ReadConfig(join("./", CONFIG_FILE))
+isFirstLaunch = not os.path.exists(join("./", SETUP_FILE))
 
 force = FORCE_FLAG in argv or FORCE_ALT in argv
 skip = SKIP_FLAG in argv or SKIP_ALT in argv

@@ -23,12 +23,12 @@ class Build:
 			return (False)
 		if (branch):
 			result = subprocess.run(
-				["git", "clone", "git@" + pair[0], "-b", pair[1], LIB + '/' + name],
+				["git", "submodule", "add", "git@" + pair[0], "-b", pair[1], join('./', LIB, name)],
 				capture_output=True,
 				text=True)
 		else:
 			result = subprocess.run(
-				["git", "clone", "git@" + pair[0], LIB + '/' + name],
+				["git", "submodule", "add", "git@" + pair[0], join('./', LIB, name)],
 				capture_output=True,
 				text=True)
 		return (True)
@@ -37,11 +37,11 @@ class Build:
 		Output.Write(f"{C_EMPHASIS}Performing first-time setup...\n")
 		if (LIB == ""):
 			raise ValueError("LIB is an empty string.")
-		if (not os.path.exists("./" + BUILD)):
-			os.mkdir("./" + BUILD)
+		if (not os.path.exists(join("./", BUILD))):
+			os.mkdir(join("./", BUILD))
 			Output.Write(f"{C_PRIMARY}Created {BUILD} folder.\n")
-		if (not os.path.exists("./" + LIB)):
-			os.mkdir("./" + LIB)
+		if (not os.path.exists(join("./", LIB))):
+			os.mkdir(join("./", LIB))
 		Output.Write(f"{C_PRIMARY}Created {LIB} folder.\n")
 		if (len(config["Dependencies"]) > 0):
 			Output.Write(f"{C_PRIMARY}Dependencies: [\n")
@@ -59,7 +59,7 @@ class Build:
 		else:
 			Output.Write(f"{C_PRIMARY}Dependencies: []\n")
 			Output.Write(f"{C_WARN}No git dependencies found, proceeding.\n")
-		with open("./" + SETUP_FILE, 'w') as file:
+		with open(join("./", SETUP_FILE), 'w') as file:
 			file.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S") +
 				f"\nThis file marks {config["SDK_NAME"]} setup completion.")
 		Output.Write(f"{C_GOOD}Setup complete.\n")
