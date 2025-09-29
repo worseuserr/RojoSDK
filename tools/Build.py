@@ -24,7 +24,7 @@ class Build:
 			return (False)
 		if (branch):
 			result = subprocess.run(
-				["git", "submodule", "add", "--force", "git@" + pair[0], "-b", pair[1], join('./', LIB, name)],
+				["git", "submodule", "add", "--force", "-b", pair[1], "git@" + pair[0], join('./', LIB, name)],
 				capture_output=True,
 				text=True)
 		else:
