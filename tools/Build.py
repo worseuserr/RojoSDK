@@ -32,8 +32,8 @@ class Build:
 				["git", "submodule", "add", "--force", "git@" + pair[0], join('./', LIB, name)],
 				capture_output=True,
 				text=True)
-		if (Output.LogLevel == "verbose"):
-			Output.Write(f"\n{C_WARN}\tGit: {result.stdout}")
+		if (Output.LogLevel == "verbose" and len(result.stdout) > 0):
+			Output.Write(f"\n{C_WARN}\tGit: {result.stdout.rstrip('\n')}")
 		if (result.returncode != 0):
 			Output.Write(f"\n{C_BAD}\tGit error: Code {result.returncode}\nGit:{result.stderr}")
 			exit(code=1)
