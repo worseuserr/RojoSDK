@@ -1,4 +1,5 @@
-import os, subprocess, sys, shutil, stat
+import os, subprocess, stat
+from os.path import join
 from datetime import datetime
 from tools.Shell import Shell
 from tools.Output import Output
@@ -18,6 +19,8 @@ class Build:
 		pair = str.split(dep, '@')
 		name = str.split(pair[0], '/')[1]
 		branch = pair[1] if (len(pair) > 1) else False
+		if (os.path.exists(join("./", LIB, name))):
+			return (False)
 		if (branch):
 			result = subprocess.run(
 				["git", "clone", "git@" + pair[0], "-b", pair[1], LIB + '/' + name],
@@ -28,6 +31,7 @@ class Build:
 				["git", "clone", "git@" + pair[0], LIB + '/' + name],
 				capture_output=True,
 				text=True)
+		return (True)
 
 	def Setup(config):
 		Output.Write(f"{C_EMPHASIS}Performing first-time setup...\n")
@@ -36,10 +40,8 @@ class Build:
 		if (not os.path.exists("./" + BUILD)):
 			os.mkdir("./" + BUILD)
 			Output.Write(f"{C_PRIMARY}Created {BUILD} folder.\n")
-		if (os.path.exists("./" + LIB)): # Needs change, doesn't preserve non-git libraries
-			shutil.rmtree("./" + LIB, onexc=Build.RemoveReadonly)
-			Output.Write(f"{C_PRIMARY}Cleared existing {LIB} folder.\n")
-		os.mkdir("./" + LIB)
+		if (not os.path.exists("./" + LIB)):
+			os.mkdir("./" + LIB)
 		Output.Write(f"{C_PRIMARY}Created {LIB} folder.\n")
 		if (len(config["Dependencies"]) > 0):
 			Output.Write(f"{C_PRIMARY}Dependencies: [\n")
@@ -49,8 +51,10 @@ class Build:
 			Output.Write("Fetching repositories...\n")
 			for dep in config["Dependencies"]:
 				Output.Write(f"{C_EMPHASIS}\tCloning {dep}...")
-				Build.GitClone(dep)
-				Output.WriteInPlace(f"{C_EMPHASIS}\tCloning {dep}... {C_GOOD}OK\n")
+				if (Build.GitClone(dep)):
+					Output.WriteInPlace(f"{C_EMPHASIS}\tCloning {dep}... {C_GOOD}OK\n")
+				else:
+					Output.WriteInPlace(f"{C_EMPHASIS}\tCloning {dep}... {C_WARN}ALREADY PRESENT\n")
 			Output.Write(f"{C_PRIMARY}Dependencies cloned.\n")
 		else:
 			Output.Write(f"{C_PRIMARY}Dependencies: []\n")
