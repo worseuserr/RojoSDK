@@ -23,7 +23,7 @@ isFirstLaunch = not os.path.exists(join("./", SETUP_FILE))
 force = FORCE_FLAG in argv or FORCE_ALT in argv
 skip = SKIP_FLAG in argv or SKIP_ALT in argv
 reset = RESET_FLAG in argv or RESET_ALT in argv
-shouldSetup = force or (isFirstLaunch and not skip)
+shouldSetup = (force or reset) or (isFirstLaunch and not skip)
 
 if ((force or reset) and skip):
 	Output.Write(f"{C_BAD}Error: {SKIP_FLAG} ({SKIP_ALT}) and {FORCE_FLAG if force else RESET_FLAG} ({FORCE_ALT if force else RESET_ALT}) cannot be passed simultaneously. Use --help for usage.")
@@ -40,6 +40,8 @@ else:
 # BUILD
 
 Output.Write(f"{C_EMPHASIS}Started build using SDK version " + config["SDK_VERSION"] + "\n")
+if (reset):
+	Build.Cleanup(config)
 if (shouldSetup):
 	Build.Setup(config)
 sources = Build.GetSources(config)

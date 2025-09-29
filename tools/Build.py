@@ -8,7 +8,7 @@ from tools.Constants import BUILD, C_BAD, DEBUG_DELETE_LIB, LIB,C_EMPHASIS,C_WAR
 
 class Build:
 	def GetSource(libPath):
-		Shell.ReadConfig()
+		pass
 
 	def RemoveReadonly(func, path, exc):
 		os.chmod(path, stat.S_IWRITE)
@@ -78,6 +78,9 @@ class Build:
 		Output.Write(f"{C_GOOD}Setup complete.\n")
 
 	def GetSources(config):
+		pass
+
+	def Cleanup(config):
 		pass
 
 	def Build(sources):
