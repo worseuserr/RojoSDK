@@ -1,6 +1,6 @@
 [build]
 	# Github repositories in format: "remote:username/repo@branch"
-	# Works with any remotes that support the standard SSH-style URL.
+	# Works with any remotes that support the standard SSH-style URL
 	# Example: ["github.com:worseuserr/RojoSDK"]
 	Dependencies = []
 
@@ -11,13 +11,16 @@
 	# Whether to automatically pull dependency changes when building
 	AutoUpdateDependencies = false
 
+	# Whether to clear dependency folders and git metadata if they are removed from the dependency list
+	AutoClearDependencies = true
+
 	# Whether to notify about outdated dependencies
 	NotifyOutdatedDependencies = true
 
-	# Sources to look for if a dependence doesn't have 'build.py' or 'src'
+	# Sources to look for if a dependency doesn't have 'build.py' or 'src'
 	DependencySources = []
 
-	# Logging verbosity
+	# Logging verbosity (can be overridden by -v flag)
 	# ["quiet", "normal", "verbose"]
 	LogLevel = "normal"
 
