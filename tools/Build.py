@@ -1,9 +1,10 @@
+import shutil
 import os, subprocess, stat
 from os.path import join
 from datetime import datetime
 from tools.Shell import Shell
 from tools.Output import Output
-from tools.Constants import BUILD, LIB,C_EMPHASIS,C_WARN,C_PRIMARY,C_GOOD,SETUP_FILE
+from tools.Constants import BUILD, C_BAD, DEBUG_DELETE_LIB, LIB,C_EMPHASIS,C_WARN,C_PRIMARY,C_GOOD,SETUP_FILE
 
 class Build:
 	def GetSource(libPath):
@@ -23,14 +24,18 @@ class Build:
 			return (False)
 		if (branch):
 			result = subprocess.run(
-				["git", "submodule", "add", "git@" + pair[0], "-b", pair[1], join('./', LIB, name)],
+				["git", "submodule", "add", "--force", "git@" + pair[0], "-b", pair[1], join('./', LIB, name)],
 				capture_output=True,
 				text=True)
 		else:
 			result = subprocess.run(
-				["git", "submodule", "add", "git@" + pair[0], join('./', LIB, name)],
+				["git", "submodule", "add", "--force", "git@" + pair[0], join('./', LIB, name)],
 				capture_output=True,
 				text=True)
+		if (Output.LogLevel == "verbose"):
+			Output.Write(f"\n{C_WARN}\tGit: {result.stdout}")
+		if (result.returncode != 0):
+			Output.Write(f"\n{C_BAD}\t\tGit Error: {result.returncode}\n{result.stderr}")
 		return (True)
 
 	def Setup(config):
@@ -40,6 +45,9 @@ class Build:
 		if (not os.path.exists(join("./", BUILD))):
 			os.mkdir(join("./", BUILD))
 			Output.Write(f"{C_PRIMARY}Created {BUILD} folder.\n")
+		if (os.path.exists(join("./", LIB)) and DEBUG_DELETE_LIB):
+			shutil.rmtree("./" + LIB, onexc=Build.RemoveReadonly)
+			Output.Write(f"{C_PRIMARY}Cleared existing {LIB} folder.\n")
 		if (not os.path.exists(join("./", LIB))):
 			os.mkdir(join("./", LIB))
 		Output.Write(f"{C_PRIMARY}Created {LIB} folder.\n")

@@ -18,3 +18,5 @@ C_PRIMARY=	Colors.Reset
 C_GOOD=		Colors.Green
 C_WARN=		Colors.Yellow
 C_BAD=		Colors.Red
+
+DEBUG_DELETE_LIB=	True
