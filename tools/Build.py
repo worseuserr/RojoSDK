@@ -51,6 +51,10 @@ class Build:
 			Output.Write(f"{C_PRIMARY}Cleared existing {LIB} folder.\n")
 		if (not os.path.exists(join("./", LIB))):
 			os.mkdir(join("./", LIB))
+		if (DEBUG_DELETE_LIB):
+			with open(join("./", LIB, ".gitkeep"), 'w') as fp:
+				pass
+			Output.Write(f"{C_PRIMARY}Created new .gitkeep.\n")
 		Output.Write(f"{C_PRIMARY}Created {LIB} folder.\n")
 		if (len(config["Dependencies"]) > 0):
 			Output.Write(f"{C_PRIMARY}Dependencies: [\n")
