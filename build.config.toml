@@ -2,7 +2,7 @@
 	# Github repositories in format: "remote:username/repo@branch"
 	# Works with any remotes that support the standard SSH-style URL.
 	# Example: ["github.com:worseuserr/RojoSDK"]
-	Dependencies = ["github.com:worseuserr/RojoSDK"]
+	Dependencies = []
 
 	# How often to check for dependency updates
 	# ["never", "daily", "on_build"]
