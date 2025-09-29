@@ -55,19 +55,19 @@ class Colors:
 class Output:
 	LogLevel = "normal"
 
-	def WriteInPlace(str):
+	def WriteInPlace(msg):
 		sys.stdout.write("\r")
-		Output.Write(("\n" if (Output.LogLevel == "verbose") else "") + f"{str}")
+		Output.Write(("\n" if (Output.LogLevel == "verbose") else "") + f"{msg}")
 
-	def Write(str):
+	def Write(msg):
 		if (Output.LogLevel == "quiet"):
 			return
 		append = f"{Colors.Yellow}[" + datetime.now().strftime("%H:%M:%S.%f")[:-3] + f"] {Colors.Reset}"
 		if (Output.LogLevel == "verbose"):
-			if (len(str) > 0 and str[0] == '\n'):
-				str = str[1:]
+			if (len(msg) > 0 and msg[0] == '\n'):
+				msg = msg[1:]
 				append = "\n" + append
-		sys.stdout.write(append + str + Colors.Reset)
+		sys.stdout.write(append + str.replace(msg, '\t', "   ") + Colors.Reset)
 		sys.stdout.flush()
 
 	def LoadingBar(segments, total, progress, append = ""):
