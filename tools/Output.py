@@ -14,14 +14,14 @@ class Colors:
 	Reset	= "\033[0m"
 
 	# Bright text colors
-	BrightBlack	= "\033[90m"
-	BrightRed	= "\033[91m"
-	BrightGreen	= "\033[92m"
-	BrightYellow= "\033[93m"
-	BrightBlue	= "\033[94m"
-	BrightMagenta= "\033[95m"
-	BrightCyan	= "\033[96m"
-	BrightWhite	= "\033[97m"
+	BrightBlack		= "\033[90m"
+	BrightRed		= "\033[91m"
+	BrightGreen		= "\033[92m"
+	BrightYellow	= "\033[93m"
+	BrightBlue		= "\033[94m"
+	BrightMagenta	= "\033[95m"
+	BrightCyan		= "\033[96m"
+	BrightWhite		= "\033[97m"
 
 	# Background colors
 	BgBlack		= "\033[40m"
@@ -42,6 +42,15 @@ class Colors:
 	BgBrightMagenta	= "\033[105m"
 	BgBrightCyan	= "\033[106m"
 	BgBrightWhite	= "\033[107m"
+
+	# Text styles
+	Bold			= "\033[1m"
+	Dim				= "\033[2m"
+	Italic			= "\033[3m"
+	Underline		= "\033[4m"
+	Blink			= "\033[5m"
+	Inverse			= "\033[7m"
+	Strikethrough	= "\033[9m"
 
 class Output:
 	LogLevel = "normal"
