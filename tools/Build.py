@@ -35,7 +35,8 @@ class Build:
 		if (Output.LogLevel == "verbose"):
 			Output.Write(f"\n{C_WARN}\tGit: {result.stdout}")
 		if (result.returncode != 0):
-			Output.Write(f"\n{C_BAD}\t\tGit Error: {result.returncode}\n{result.stderr}")
+			Output.Write(f"\n{C_BAD}\tGit error: Code {result.returncode}\nGit:{result.stderr}")
+			exit(code=1)
 		return (True)
 
 	def Setup(config):
