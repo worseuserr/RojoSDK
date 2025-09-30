@@ -1,10 +1,11 @@
+from tools.Constants import BUILD, LIB
 from tools.Output import Colors
 
 Usage = f"""
 {Colors.White}Usage:{Colors.Reset} python3 build.py {Colors.Italic}[OPTIONS]{Colors.Reset}
 
 {Colors.White}Description:{Colors.Reset}
-   This script builds all your libraries with your source code into /build.
+   This script builds all your libraries with your source code into /{BUILD}.
 
 {Colors.White}Options:{Colors.Yellow}
    -V, --version       Show the version and exit
@@ -13,4 +14,5 @@ Usage = f"""
    -f, --force-setup   Force first-build setup to run before building
    -v, --verbose       Enable more verbose output
    -r, --reset         Clean everything and rerun setup
-   -c, --clean         Clean everything and exit{Colors.Reset}"""
+   -c, --clean         Clean missing/trailing files and git entries
+   -F, --full-clean    Clean everything, including {BUILD} and {LIB} folders (destructive){Colors.Reset}"""
