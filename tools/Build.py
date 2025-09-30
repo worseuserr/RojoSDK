@@ -21,16 +21,16 @@ class Build:
 		pair = str.split(dep, '@')
 		name = str.split(pair[0], '/')[1]
 		branch = pair[1] if (len(pair) > 1) else False
-		if (os.path.exists(join("./", LIB, name))):
+		if (os.path.exists(join(".", LIB, name))):
 			return (False)
 		if (branch):
 			result = subprocess.run(
-				["git", "submodule", "add", "--force", "-b", pair[1], "git@" + pair[0], join('./', LIB, name)],
+				["git", "submodule", "add", "--force", "-b", pair[1], "git@" + pair[0], join('.', LIB, name)],
 				capture_output=True,
 				text=True)
 		else:
 			result = subprocess.run(
-				["git", "submodule", "add", "--force", "git@" + pair[0], join('./', LIB, name)],
+				["git", "submodule", "add", "--force", "git@" + pair[0], join('.', LIB, name)],
 				capture_output=True,
 				text=True)
 		if (Output.LogLevel == "verbose" and len(result.stdout) > 0):
@@ -42,18 +42,20 @@ class Build:
 
 	def Setup(config):
 		Output.Write(f"{C_EMPHASIS}Performing first-time setup...\n")
+		lib = join(".", LIB)
+		build = join(".", BUILD)
 		if (LIB == ""):
 			raise ValueError("LIB is an empty string.")
-		if (not os.path.exists(join("./", BUILD))):
-			os.mkdir(join("./", BUILD))
+		if (not os.path.exists(build)):
+			os.mkdir(build)
 			Output.Write(f"{C_PRIMARY}Created {BUILD} folder.\n")
-		if (os.path.exists(join("./", LIB)) and DEBUG_DELETE_LIB):
-			shutil.rmtree("./" + LIB, onexc=Build.RemoveReadonly)
+		if (os.path.exists(lib) and DEBUG_DELETE_LIB):
+			shutil.rmtree(lib, onexc=Build.RemoveReadonly)
 			Output.Write(f"{C_PRIMARY}Cleared existing {LIB} folder.\n")
-		if (not os.path.exists(join("./", LIB))):
-			os.mkdir(join("./", LIB))
+		if (not os.path.exists(lib)):
+			os.mkdir(lib)
 		if (DEBUG_DELETE_LIB):
-			with open(join("./", LIB, ".gitkeep"), 'w') as fp:
+			with open(join(lib, ".gitkeep"), 'w') as fp:
 				pass
 			Output.Write(f"{C_PRIMARY}Created new .gitkeep.\n")
 		Output.Write(f"{C_PRIMARY}Created {LIB} folder.\n")
@@ -73,7 +75,7 @@ class Build:
 		else:
 			Output.Write(f"{C_PRIMARY}Dependencies: []\n")
 			Output.Write(f"{C_WARN}No git dependencies found, proceeding.\n")
-		with open(join("./", SETUP_FILE), 'w') as file:
+		with open(join(".", SETUP_FILE), 'w') as file:
 			file.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S") +
 				f"\nThis file marks {SDK_NAME} setup completion.")
 		Output.Write(f"{C_GOOD}Setup complete.\n")
@@ -89,14 +91,13 @@ class Build:
 	def Cleanup(config):
 		Output.Write(f"{C_EMPHASIS}Performing cleanup...\n")
 
-
 	def Build(sources):
 		Output.Write(f"{C_EMPHASIS}Building...\n")
 		startTime = time.time()
 		seenDestPaths = set()
 		build = join(".", BUILD)
 		src = join(".", SOURCE)
-		if (not os.path.exists(join("./", BUILD))):
+		if (not os.path.exists(join(".", BUILD))):
 			os.makedirs(build, exist_ok=True)
 			Output.Write(f"{C_PRIMARY}Created build folder.\n")
 		for sourceRoot in [src] + sources:

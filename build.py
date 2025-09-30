@@ -9,7 +9,7 @@ from tools.Usage import Usage
 # INIT
 
 argv = Shell.SplitFlags(sys.argv)
-config = Shell.ReadConfig(join("./", CONFIG_FILE))
+config = Shell.ReadConfig(join(".", CONFIG_FILE))
 
 if (HELP_FLAG in argv or HELP_ALT in argv):
 	print(Usage)
@@ -19,7 +19,7 @@ if (VERSION_FLAG in argv or VERSION_ALT in argv):
 	print(f"{C_EMPHASIS}Using {SDK_NAME} version {Colors.Yellow}{SDK_VERSION}{C_EMPHASIS} by worseuserr.{Colors.Reset}")
 	exit(code=0)
 
-isFirstLaunch = not os.path.exists(join("./", SETUP_FILE))
+isFirstLaunch = not os.path.exists(join(".", SETUP_FILE))
 force = FORCE_FLAG in argv or FORCE_ALT in argv
 skip = SKIP_FLAG in argv or SKIP_ALT in argv
 reset = RESET_FLAG in argv or RESET_ALT in argv
