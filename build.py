@@ -23,6 +23,7 @@ isFirstLaunch = not os.path.exists(join("./", SETUP_FILE))
 force = FORCE_FLAG in argv or FORCE_ALT in argv
 skip = SKIP_FLAG in argv or SKIP_ALT in argv
 reset = RESET_FLAG in argv or RESET_ALT in argv
+clean = CLEAN_FLAG in argv or CLEAN_ALT in argv
 shouldSetup = (force or reset) or (isFirstLaunch and not skip)
 
 # OPTION COMPATS
@@ -31,9 +32,8 @@ if ((force or reset) and skip):
 	Output.Write(f"{C_BAD}Error: {SKIP_FLAG} ({SKIP_ALT}) and {FORCE_FLAG if force else RESET_FLAG} ({FORCE_ALT if force else RESET_ALT}) cannot be passed simultaneously. Use {HELP_FLAG} or {HELP_ALT} for usage.")
 	exit(code=1)
 
-if (CLEAN_FLAG in argv or CLEAN_ALT in argv):
-	if (force or reset or skip):
-		Output.Write(f"{C_WARN}Warn: {CLEAN_FLAG} ({CLEAN_ALT}) ignores other flags. Use {HELP_FLAG} or {HELP_ALT} for usage.")
+if (clean and (force or reset or skip)):
+	Output.Write(f"{C_WARN}Warn: {CLEAN_FLAG} ({CLEAN_ALT}) ignores other flags. Use {HELP_FLAG} or {HELP_ALT} for usage.")
 
 if (force and reset):
 	Output.Write(f"{C_WARN}Warn: {FORCE_FLAG} ({FORCE_ALT}) is unnecessary with {RESET_FLAG} ({RESET_ALT}) Use {HELP_FLAG} or {HELP_ALT} for usage.\n")
@@ -46,8 +46,10 @@ else:
 # BUILD
 
 Output.Write(f"{C_EMPHASIS}Started build using SDK version " + config["SDK_VERSION"] + "\n")
-if (reset):
+if (reset or clean):
 	Build.Cleanup(config)
+if (clean):
+	exit(code=0)
 if (shouldSetup):
 	Build.Setup(config)
 sources = Build.GetSources(config)
