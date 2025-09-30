@@ -36,6 +36,18 @@ class Shell:
 				if (Output.LogLevel != "verbose"):
 					Output.Write(f"{C_WARN}\tRemoved {path}\n")
 
+	def CopyDir(dir, target):
+		if (not os.path.exists(target)):
+			Output.Write(f"{C_WARN}Tried to copy to non-existant folder ({dir} -> {target})\n")
+			return
+		for item in os.listdir(dir):
+			src = join(dir, item)
+			dst = join(target, item)
+			if os.path.isdir(src):
+				shutil.copytree(src, dst, dirs_exist_ok=True)
+			else:
+				shutil.copy2(src, dst)
+
 	def RemoveReadonly(func, path, exc):
 		os.chmod(path, stat.S_IWRITE)
 		if (Output.LogLevel == "verbose"):
