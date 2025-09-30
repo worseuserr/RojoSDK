@@ -25,6 +25,8 @@ VERSION_FLAG=	"--version"
 VERSION_ALT=	"-V"
 CLEAN_FLAG=		"--clean"
 CLEAN_ALT=		"-c"
+FCLEAN_FLAG=	"--full-clean"
+FCLEAN_ALT=		"-F"
 
 C_EMPHASIS=	Colors.White
 C_PRIMARY=	Colors.Reset
