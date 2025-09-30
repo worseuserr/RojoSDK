@@ -4,7 +4,7 @@ from os.path import join
 from datetime import datetime
 from tools.Shell import Shell
 from tools.Output import Output
-from tools.Constants import BUILD, C_BAD, DEBUG_DELETE_LIB, LIB,C_EMPHASIS,C_WARN,C_PRIMARY,C_GOOD,SETUP_FILE
+from tools.Constants import BUILD, C_BAD, DEBUG_DELETE_LIB, LIB,C_EMPHASIS,C_WARN,C_PRIMARY,C_GOOD,SETUP_FILE, SOURCE
 
 class Build:
 	def GetSource(libPath):
@@ -78,10 +78,41 @@ class Build:
 		Output.Write(f"{C_GOOD}Setup complete.\n")
 
 	def GetSources(config):
-		pass
+		sources = set()
+		for source in os.listdir(join("./", LIB)):
+			path = join("./", LIB, source, SOURCE)
+			if (os.path.isdir(path)):
+				sources.add(path)
+		return (sources)
 
 	def Cleanup(config):
 		pass
 
 	def Build(sources):
-		pass
+		Output.Write(f"{C_EMPHASIS}Starting build...\n")
+		seenDestPaths = set()
+		build = join("./", BUILD)
+		src = join("./", SOURCE)
+		if (not os.path.exists(join("./", BUILD))):
+			os.makedirs(build, exist_ok=True)
+			Output.Write(f"{C_PRIMARY}Created build folder.\n")
+		for sourceRoot in [src] + sources:
+			Output.Write(f"{C_PRIMARY}\tProcessing: {sourceRoot}...")
+			for dirpath, _, filenames in os.walk(sourceRoot):
+				for filename in filenames:
+					if (filename == ".gitkeep"):
+						if (Output.LogLevel == "verbose"):
+							Output.Write(f"{C_WARN}\tIgnoring .gitkeep in '{sourceRoot}'.\n")
+						continue
+					srcPath = os.path.join(dirpath, filename)
+					relativePath = os.path.relpath(srcPath, start=sourceRoot)
+					destPath = os.path.join(build, relativePath)
+					if (destPath in seenDestPaths):
+						Output.Write(f"{C_BAD}Build failed: File '{relativePath}' exists in multiple sources.\n")
+						exit(code=1)
+					seenDestPaths.add(destPath)
+					os.makedirs(os.path.dirname(destPath), exist_ok=True)
+					shutil.copy2(srcPath, destPath)
+					if (Output.LogLevel == "verbose"):
+						Output.Write(f"{C_PRIMARY}\t\tCopied: {srcPath}")
+			Output.WriteInPlace(f"{C_PRIMARY}\tProcessing: {sourceRoot}... {C_GOOD}OK\n")
