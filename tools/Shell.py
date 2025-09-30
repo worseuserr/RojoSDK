@@ -1,4 +1,4 @@
-import os, json, io, tomllib
+import tomllib
 
 class Shell:
 	def ReadConfig(path):
@@ -15,4 +15,3 @@ class Shell:
 			else:
 				result.append(flag)
 		return (result)
-
