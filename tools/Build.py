@@ -118,4 +118,4 @@ class Build:
 					if (Output.LogLevel == "verbose"):
 						Output.Write(f"{C_PRIMARY}\t\tCopied: {srcPath}\n")
 			Output.WriteInPlace(f"{C_PRIMARY}\tProcessing: {sourceRoot}... {C_GOOD}OK\n")
-		Output.Write(f"{C_EMPHASIS}Build successfully finished in {time.time() - startTime:.4f} seconds.\n")
+		Output.Write(f"{C_EMPHASIS}Build completed in {time.time() - startTime:.4f} seconds.\n")
