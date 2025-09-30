@@ -78,8 +78,9 @@ Usage: python3 build.py [OPTIONS]
    -s, --skip-setup    Skip first-build setup (only use if you know what you are doing)
    -f, --force-setup   Force first-build setup to run before building
    -v, --verbose       Enable more verbose output
-   -r, --reset         Clean everything and rerun setup
-   -c, --clean         Clean everything and exit
+   -r, --reset         Full clean and rerun setup
+   -n, --no-clean      Disable automatically cleaning missing/trailing files and git entries
+   -F, --full-clean    Clean everything, including {BUILD} and {LIB} folders (destructive, back to pre-setup state)
 ```
 
 ## Configuration (`build.config.toml`)
