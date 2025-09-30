@@ -31,4 +31,5 @@ C_GOOD=		Colors.Green
 C_WARN=		Colors.Yellow
 C_BAD=		Colors.Red
 
+# Only for SDK debugging, this will /lib on setup
 DEBUG_DELETE_LIB=	True
