@@ -1,5 +1,8 @@
 from tools.Output import Colors
 
+SDK_NAME=		"RojoSDK"
+SDK_VERSION =	"1.0.0"
+
 BUILD=			"build"
 SOURCE=			"src"
 LIB=			"lib"
