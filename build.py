@@ -29,11 +29,11 @@ shouldSetup = (force or reset) or (isFirstLaunch and not skip)
 # OPTION COMPATS
 
 if ((force or reset) and skip):
-	Output.Write(f"{C_BAD}Error: {SKIP_FLAG} ({SKIP_ALT}) and {FORCE_FLAG if force else RESET_FLAG} ({FORCE_ALT if force else RESET_ALT}) cannot be passed simultaneously. Use {HELP_FLAG} or {HELP_ALT} for usage.")
+	Output.Write(f"{C_BAD}Error: {SKIP_FLAG} ({SKIP_ALT}) and {FORCE_FLAG if force else RESET_FLAG} ({FORCE_ALT if force else RESET_ALT}) cannot be passed simultaneously. Use {HELP_FLAG} or {HELP_ALT} for usage.\n")
 	exit(code=1)
 
 if (clean and (force or reset or skip)):
-	Output.Write(f"{C_WARN}Warn: {CLEAN_FLAG} ({CLEAN_ALT}) ignores other flags. Use {HELP_FLAG} or {HELP_ALT} for usage.")
+	Output.Write(f"{C_WARN}Warn: {CLEAN_FLAG} ({CLEAN_ALT}) ignores other flags. Use {HELP_FLAG} or {HELP_ALT} for usage.\n")
 
 if (force and reset):
 	Output.Write(f"{C_WARN}Warn: {FORCE_FLAG} ({FORCE_ALT}) is unnecessary with {RESET_FLAG} ({RESET_ALT}) Use {HELP_FLAG} or {HELP_ALT} for usage.\n")
