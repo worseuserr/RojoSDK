@@ -5,17 +5,11 @@ from datetime import datetime
 import time
 from tools.Shell import Shell
 from tools.Output import Output
-from tools.Constants import BUILD, C_BAD, DEBUG_DELETE_LIB, LIB,C_EMPHASIS,C_WARN,C_PRIMARY,C_GOOD, SDK_NAME,SETUP_FILE, SOURCE
+from tools.Constants import BUILD, C_BAD, DEBUG_DELETE_LIB, LIB,C_EMPHASIS,C_WARN,C_PRIMARY,C_GOOD, SDK_NAME,SETUP_FILE, SOURCE, TMP
 
 class Build:
 	def GetSource(libPath):
 		pass
-
-	def RemoveReadonly(func, path, exc):
-		os.chmod(path, stat.S_IWRITE)
-		if (Output.LogLevel == "verbose"):
-			Output.Write(f"{C_WARN}\t{path} permissions overridden for deletion.\n")
-		func(path)
 
 	def GitClone(dep):
 		pair = str.split(dep, '@')
@@ -50,7 +44,7 @@ class Build:
 			os.mkdir(build)
 			Output.Write(f"{C_PRIMARY}Created {BUILD} folder.\n")
 		if (os.path.exists(lib) and DEBUG_DELETE_LIB):
-			shutil.rmtree(lib, onexc=Build.RemoveReadonly)
+			shutil.rmtree(lib, onexc=Shell.RemoveReadonly)
 			Output.Write(f"{C_PRIMARY}Cleared existing {LIB} folder.\n")
 		if (not os.path.exists(lib)):
 			os.mkdir(lib)
@@ -97,9 +91,13 @@ class Build:
 		seenDestPaths = set()
 		build = join(".", BUILD)
 		src = join(".", SOURCE)
-		if (not os.path.exists(join(".", BUILD))):
+		tmp = join(".", TMP)
+		if (not os.path.exists(build)):
 			os.makedirs(build, exist_ok=True)
-			Output.Write(f"{C_PRIMARY}Created build folder.\n")
+			Output.Write(f"{C_PRIMARY}Created {build} folder.\n")
+		if (not os.path.exists(tmp)):
+			os.makedirs(tmp, exist_ok=True)
+			Output.Write(f"{C_PRIMARY}Created {tmp} folder.\n")
 		for sourceRoot in [src] + sources:
 			Output.Write(f"{C_PRIMARY}\tProcessing: {sourceRoot}...")
 			for dirpath, _, filenames in os.walk(sourceRoot):
@@ -110,14 +108,24 @@ class Build:
 						continue
 					srcPath = os.path.join(dirpath, filename)
 					relativePath = os.path.relpath(srcPath, start=sourceRoot)
-					destPath = os.path.join(build, relativePath)
+					destPath = os.path.join(tmp, relativePath)
 					if (destPath in seenDestPaths):
+						Output.WriteInPlace(f"{C_PRIMARY}\tProcessing: {sourceRoot}... {C_BAD}FAIL\n")
 						Output.Write(f"{C_BAD}Build failed: File '{relativePath}' exists in multiple sources.\n")
+						shutil.rmtree(tmp, Shell.RemoveReadonly)
 						exit(code=1)
 					seenDestPaths.add(destPath)
 					os.makedirs(os.path.dirname(destPath), exist_ok=True)
 					shutil.copy2(srcPath, destPath)
 					if (Output.LogLevel == "verbose"):
-						Output.Write(f"{C_PRIMARY}\t\tCopied: {srcPath}\n")
+						Output.Write(f"{C_PRIMARY}\t\tCopied: {srcPath} to {destPath}\n")
 			Output.WriteInPlace(f"{C_PRIMARY}\tProcessing: {sourceRoot}... {C_GOOD}OK\n")
+		Output.Write(f"{C_PRIMARY}Clearing build folder...")
+		Shell.ClearDir(build)
+		Output.WriteInPlace(f"{C_PRIMARY}Clearing build folder... {C_GOOD} OK\n")
+		Output.Write(f"{C_PRIMARY}Copying new files...")
+		Shell.CopyDir(tmp, build)
+		Output.WriteInPlace(f"{C_PRIMARY}Copying new files... {C_GOOD} OK\n")
+		shutil.rmtree(tmp, Shell.RemoveReadonly)
+		Output.Write(f"{C_PRIMARY}Removed {TMP}.\n")
 		Output.Write(f"{C_EMPHASIS}Build completed in {time.time() - startTime:.4f} seconds.\n")
