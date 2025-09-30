@@ -56,17 +56,16 @@ class Output:
 	LogLevel = "normal"
 
 	def WriteInPlace(msg):
-		sys.stdout.write("\r")
-		Output.Write(("\n" if (Output.LogLevel == "verbose") else "") + f"{msg}")
+		sys.stdout.write("\r" if (Output.LogLevel != "verbose") else "")
+		Output.Write(msg)
 
 	def Write(msg):
 		if (Output.LogLevel == "quiet"):
 			return
 		append = f"{Colors.Yellow}[" + datetime.now().strftime("%H:%M:%S.%f")[:-3] + f"] {Colors.Reset}"
 		if (Output.LogLevel == "verbose"):
-			if (len(msg) > 0 and msg[0] == '\n'):
-				msg = msg[1:]
-				append = "\n" + append
+			if (msg[-1:] != '\n'):
+				msg = msg + '\n'
 		sys.stdout.write(append + str.replace(msg, '\t', "   ") + Colors.Reset)
 		sys.stdout.flush()
 
