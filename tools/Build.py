@@ -2,6 +2,7 @@ import shutil
 import os, subprocess, stat
 from os.path import join
 from datetime import datetime
+import time
 from tools.Shell import Shell
 from tools.Output import Output
 from tools.Constants import BUILD, C_BAD, DEBUG_DELETE_LIB, LIB,C_EMPHASIS,C_WARN,C_PRIMARY,C_GOOD,SETUP_FILE, SOURCE
@@ -77,22 +78,23 @@ class Build:
 				f"\nThis file marks {config["SDK_NAME"]} setup completion.")
 		Output.Write(f"{C_GOOD}Setup complete.\n")
 
-	def GetSources(config):
-		sources = set()
-		for source in os.listdir(join("./", LIB)):
-			path = join("./", LIB, source, SOURCE)
+	def GetSources(config): # Barebones version, needs building and update checking support
+		sources = list()
+		for source in os.listdir(join(".", LIB)):
+			path = join(".", LIB, source, SOURCE)
 			if (os.path.isdir(path)):
-				sources.add(path)
+				sources.append(path)
 		return (sources)
 
 	def Cleanup(config):
 		pass
 
 	def Build(sources):
-		Output.Write(f"{C_EMPHASIS}Starting build...\n")
+		Output.Write(f"{C_EMPHASIS}Building...\n")
+		startTime = time.time()
 		seenDestPaths = set()
-		build = join("./", BUILD)
-		src = join("./", SOURCE)
+		build = join(".", BUILD)
+		src = join(".", SOURCE)
 		if (not os.path.exists(join("./", BUILD))):
 			os.makedirs(build, exist_ok=True)
 			Output.Write(f"{C_PRIMARY}Created build folder.\n")
@@ -114,5 +116,6 @@ class Build:
 					os.makedirs(os.path.dirname(destPath), exist_ok=True)
 					shutil.copy2(srcPath, destPath)
 					if (Output.LogLevel == "verbose"):
-						Output.Write(f"{C_PRIMARY}\t\tCopied: {srcPath}")
+						Output.Write(f"{C_PRIMARY}\t\tCopied: {srcPath}\n")
 			Output.WriteInPlace(f"{C_PRIMARY}\tProcessing: {sourceRoot}... {C_GOOD}OK\n")
+		Output.Write(f"{C_EMPHASIS}Build successfully finished in {time.time() - startTime:.4f} seconds.\n")
