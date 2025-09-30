@@ -23,30 +23,33 @@ class Shell:
 		return (result)
 
 	def ClearDir(dir):
+		if (not os.path.exists(dir)):
+			Output.Write(f"{C_WARN}Tried to clear non-existant folder ({dir})\n")
+			return
 		for filename in os.listdir(dir):
-				if (filename == ".gitkeep"):
-					continue
-				path = join(dir, filename)
-				if (os.path.isfile(path) or os.path.islink(path)):
-					os.remove(path)
-				elif (os.path.isdir(path)):
-					shutil.rmtree(path, onexc=dir.RemoveReadonly)
-				else:
-					continue
-				if (Output.LogLevel != "verbose"):
-					Output.Write(f"{C_WARN}\tRemoved {path}\n")
+			if (filename == ".gitkeep"):
+				continue
+			path = join(dir, filename)
+			if (os.path.isdir(path)):
+				shutil.rmtree(path, onexc=Shell.RemoveReadonly)
+			else:
+				os.remove(path)
+			if (Output.LogLevel == "verbose"):
+				Output.Write(f"{C_WARN}\tRemoved {path}\n")
 
 	def CopyDir(dir, target):
 		if (not os.path.exists(target)):
 			Output.Write(f"{C_WARN}Tried to copy to non-existant folder ({dir} -> {target})\n")
 			return
-		for item in os.listdir(dir):
-			src = join(dir, item)
-			dst = join(target, item)
+		for filename in os.listdir(dir):
+			src = join(dir, filename)
+			dst = join(target, filename)
 			if os.path.isdir(src):
 				shutil.copytree(src, dst, dirs_exist_ok=True)
 			else:
 				shutil.copy2(src, dst)
+			if (Output.LogLevel == "verbose"):
+				Output.Write(f"{C_WARN}\tCopied {src} to {dst}\n")
 
 	def RemoveReadonly(func, path, exc):
 		os.chmod(path, stat.S_IWRITE)
