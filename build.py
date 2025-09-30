@@ -24,7 +24,7 @@ force = FORCE_FLAG in argv or FORCE_ALT in argv
 skip = SKIP_FLAG in argv or SKIP_ALT in argv
 reset = RESET_FLAG in argv or RESET_ALT in argv
 noclean = NOCLEAN_FLAG in argv or NOCLEAN_ALT in argv
-fclean = FCLEAN_FLAG in argv or FCLEAN_ALT in argv or reset
+fclean = FCLEAN_FLAG in argv or FCLEAN_ALT in argv
 shouldSetup = (force or reset) or (isFirstLaunch and not skip)
 
 # OPTION COMPATS
@@ -44,6 +44,9 @@ if (VERBOSE_FLAG in argv or VERBOSE_ALT in argv):
 else:
 	Output.LogLevel = config["LogLevel"]
 
+if (reset):
+	fclean = True
+
 # BUILD
 
 Output.Write(f"{C_EMPHASIS}Started build using SDK version {SDK_VERSION}\n")
@@ -55,8 +58,9 @@ if (fclean):
 	Output.Write(f"{C_PRIMARY}/{BUILD} cleared.\n")
 	Shell.ClearDir(join(".", LIB))
 	Output.Write(f"{C_PRIMARY}/{LIB} cleared.\n")
-	os.remove(join(".", SETUP_FILE))
-	Output.Write(f"{C_PRIMARY}Removed setup marker.\n")
+	if (os.path.exists(join(".", SETUP_FILE))):
+		os.remove(join(".", SETUP_FILE))
+		Output.Write(f"{C_PRIMARY}Removed setup marker.\n")
 if (not noclean):
 	Build.Cleanup(config)
 if (fclean and not reset):
