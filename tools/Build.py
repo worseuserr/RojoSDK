@@ -5,7 +5,7 @@ from datetime import datetime
 import time
 from tools.Shell import Shell
 from tools.Output import Output
-from tools.Constants import BUILD, C_BAD, DEBUG_DELETE_LIB, LIB,C_EMPHASIS,C_WARN,C_PRIMARY,C_GOOD,SETUP_FILE, SOURCE
+from tools.Constants import BUILD, C_BAD, DEBUG_DELETE_LIB, LIB,C_EMPHASIS,C_WARN,C_PRIMARY,C_GOOD, SDK_NAME,SETUP_FILE, SOURCE
 
 class Build:
 	def GetSource(libPath):
@@ -75,7 +75,7 @@ class Build:
 			Output.Write(f"{C_WARN}No git dependencies found, proceeding.\n")
 		with open(join("./", SETUP_FILE), 'w') as file:
 			file.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S") +
-				f"\nThis file marks {config["SDK_NAME"]} setup completion.")
+				f"\nThis file marks {SDK_NAME} setup completion.")
 		Output.Write(f"{C_GOOD}Setup complete.\n")
 
 	def GetSources(config): # Barebones version, needs building and update checking support
@@ -87,7 +87,8 @@ class Build:
 		return (sources)
 
 	def Cleanup(config):
-		pass
+		Output.Write(f"{C_EMPHASIS}Performing cleanup...\n")
+
 
 	def Build(sources):
 		Output.Write(f"{C_EMPHASIS}Building...\n")
