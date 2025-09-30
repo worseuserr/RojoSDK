@@ -12,4 +12,5 @@ Usage = f"""
    -s, --skip-setup    Skip first-build setup (only use if you know what you are doing)
    -f, --force-setup   Force first-build setup to run before building
    -v, --verbose       Enable more verbose output
-   -r, --reset         Clean everything and rerun setup{Colors.Reset}"""
+   -r, --reset         Clean everything and rerun setup
+   -c, --clean         Clean everything and exit{Colors.Reset}"""

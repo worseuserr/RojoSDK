@@ -6,6 +6,7 @@ LIB=			"lib"
 CONFIG_FILE=	"build.config.toml"
 SETUP_FILE=		"tools/.setupmarker.txt"
 UPDATE_FILE=	"tools/.lastupdate.txt"
+
 SKIP_FLAG=		"--skip-setup"
 SKIP_ALT=		"-s"
 FORCE_FLAG=		"--force-setup"
@@ -18,6 +19,8 @@ HELP_FLAG=		"--help"
 HELP_ALT=		"-h"
 VERSION_FLAG=	"--version"
 VERSION_ALT=	"-V"
+CLEAN_FLAG=		"--clean"
+CLEAN_ALT=		"-c"
 
 C_EMPHASIS=	Colors.White
 C_PRIMARY=	Colors.Reset
