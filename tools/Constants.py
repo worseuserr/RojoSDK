@@ -1,3 +1,4 @@
+import os
 from tools.Output import Colors
 
 SDK_NAME=		"RojoSDK"
@@ -8,8 +9,8 @@ SOURCE=			"src"
 LIB=			"lib"
 TMP=			"tmp"
 CONFIG_FILE=	"build.config.toml"
-SETUP_FILE=		"tools/.setupmarker.txt"
-UPDATE_FILE=	"tools/.lastupdate.txt"
+SETUP_FILE=		os.path.normpath("tools/.setupmarker.txt")
+UPDATE_FILE=	os.path.normpath("tools/.lastupdate.txt")
 
 SKIP_FLAG=		"--skip-setup"
 SKIP_ALT=		"-s"
@@ -22,17 +23,17 @@ RESET_ALT=		"-r"
 HELP_FLAG=		"--help"
 HELP_ALT=		"-h"
 VERSION_FLAG=	"--version"
-VERSION_ALT=	"-v"
+VERSION_ALT=	"-V"
 NOCLEAN_FLAG=	"--no-clean"
 NOCLEAN_ALT=	"-n"
 FCLEAN_FLAG=	"--full-clean"
 FCLEAN_ALT=		"-F"
 
-C_EMPHASIS=	Colors.White
-C_PRIMARY=	Colors.Reset
-C_GOOD=		Colors.Green
-C_WARN=		Colors.Yellow
-C_BAD=		Colors.Red
+C_EMPHASIS=		Colors.White
+C_PRIMARY=		Colors.Reset
+C_GOOD=			Colors.Green
+C_WARN=			Colors.Yellow
+C_BAD=			Colors.Red
 
 # Only for SDK debugging, this will /lib on setup
-DEBUG_DELETE_LIB=	True
+DEBUG_DELETE_LIB=	False
