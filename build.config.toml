@@ -1,27 +1,29 @@
 [build]
-	# Github repositories in format: "remote:username/repo@branch"
-	# Works with any remotes that support the standard SSH-style URL
-	# Example: ["github.com:worseuserr/RojoSDK"]
+	# A list of Git repositories to include as dependencies.
+	# Format: "remote:username/repo@branch"
+	# Example: ["github.com:worseuserr/RojoSDK@main"]
 	Dependencies = []
 
-	# How often to check for dependency updates
-	# ["never", "daily", "on_build"]
+	# How often to check for dependency updates.
+	# Options: "never", "daily", "on_build"
 	DependencyCheckFrequency = "daily"
 
-	# Whether to automatically pull dependency changes when building
+	# If true, automatically pulls dependency changes when a new commit is found.
 	AutoUpdateDependencies = false
 
-	# Whether to clear dependency folders and git metadata if they are removed from the dependency list
+	# If true, removes dependency folders and .gitmodules entries if the
+	# dependency is removed from Dependencies
 	AutoClearDependencies = true
 
-	# Whether to notify about outdated dependencies
+	# If true, prints a notification during the build if any dependencies are outdated.
 	NotifyOutdatedDependencies = true
 
-	# Sources to look for if a dependency doesn't have 'build.py' or 'src'
+	# A list of alternate source directories to look for if a dependency
+	# does not have 'build.py' or a 'src' folder.
 	DependencySources = []
 
-	# Logging verbosity (can be overridden by -v flag)
-	# ["quiet", "normal", "verbose"]
+	# Sets the default logging verbosity. Can be overridden by the -v flag.
+	# Options: "quiet", "normal", "verbose"
 	LogLevel = "normal"
 
 	# Manifest
