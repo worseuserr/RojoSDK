@@ -30,7 +30,7 @@ class Build:
 		if (Output.LogLevel == "verbose" and len(result.stdout) > 0):
 			Output.Write(f"\n{C_WARN}\tGit: {result.stdout.rstrip('\n')}")
 		if (result.returncode != 0):
-			Output.Write(f"\n{C_BAD}\tGit error: Code {result.returncode}\nGit: {result.stderr}")
+			Output.Write(f"\n{C_BAD}Git error: Code {result.returncode}\nGit: {result.stderr}")
 			exit(code=1)
 		return (True)
 
@@ -84,6 +84,27 @@ class Build:
 
 	def Cleanup(config):
 		Output.Write(f"{C_EMPHASIS}Performing cleanup...\n")
+		submodules = str.splitlines(subprocess.run(["git", "config", "--file", ".gitmodules", "--get-regexp", "path"], text=True, capture_output=True).stdout)
+		if (len(submodules) < 1):
+			Output.Write(f"{C_WARN}No submodules to clean.\n")
+			return
+		for submodule in submodules:
+			relpath = os.path.normpath(str.split(submodule, ' ')[1])
+			path = join(".", relpath)
+			if (os.path.exists(path)):
+				if (Output.LogLevel == "verbose"):
+					Output.Write(f"{C_PRIMARY}\tSubmodule {path} still exists in lib, skipping.\n")
+				continue
+			Output.Write(f"{C_PRIMARY}\tClearing {relpath} entry...")
+			result = subprocess.run(["git", "submodule", "deinit", "-f", relpath], text=True, capture_output=True)
+			if (Output.LogLevel == "verbose"):
+				Output.Write(f"{C_WARN}\tGit: {result.stdout+result.stderr}")
+			shutil.rmtree(join(".", ".git", "modules", relpath), onexc=Shell.RemoveReadonly)
+			result = subprocess.run(["git", "rm", "-f", relpath], text=True, capture_output=True)
+			if (Output.LogLevel == "verbose"):
+				Output.Write(f"{C_WARN}\tGit: {result.stdout+result.stderr}")
+			Output.WriteInPlace(f"{C_PRIMARY}\tClearing {relpath} entry... {C_GOOD}OK\n")
+		Output.Write(f"{C_EMPHASIS}Cleanup finished.\n")
 
 	def Build(sources):
 		Output.Write(f"{C_EMPHASIS}Building...\n")
@@ -112,7 +133,7 @@ class Build:
 					if (destPath in seenDestPaths):
 						Output.WriteInPlace(f"{C_PRIMARY}\tProcessing: {sourceRoot}... {C_BAD}FAIL\n")
 						Output.Write(f"{C_BAD}Build failed: File '{relativePath}' exists in multiple sources.\n")
-						shutil.rmtree(tmp, Shell.RemoveReadonly)
+						shutil.rmtree(tmp, onexc=Shell.RemoveReadonly)
 						exit(code=1)
 					seenDestPaths.add(destPath)
 					os.makedirs(os.path.dirname(destPath), exist_ok=True)
@@ -126,6 +147,6 @@ class Build:
 		Output.Write(f"{C_PRIMARY}Copying new files...")
 		Shell.CopyDir(tmp, build)
 		Output.WriteInPlace(f"{C_PRIMARY}Copying new files... {C_GOOD} OK\n")
-		shutil.rmtree(tmp, Shell.RemoveReadonly)
+		shutil.rmtree(tmp, onexc=Shell.RemoveReadonly)
 		Output.Write(f"{C_PRIMARY}Removed {TMP}.\n")
 		Output.Write(f"{C_EMPHASIS}Build completed in {time.time() - startTime:.4f} seconds.\n")
