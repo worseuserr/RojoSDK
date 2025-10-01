@@ -26,6 +26,7 @@ reset = RESET_FLAG in argv or RESET_ALT in argv
 noclean = NOCLEAN_FLAG in argv or NOCLEAN_ALT in argv
 fclean = FCLEAN_FLAG in argv or FCLEAN_ALT in argv
 shouldSetup = (force or reset) or (isFirstLaunch and not skip)
+nobuild = NBUILD_FLAG in argv or NBUILD_ALT in argv
 
 # OPTION COMPATS
 
@@ -69,5 +70,8 @@ if (fclean and not reset):
 
 if (shouldSetup):
 	Build.Setup(config)
+
 sources = Build.GetSources(config)
+if (nobuild):
+	exit(code=0)
 Build.Build(sources)
