@@ -81,6 +81,7 @@ Usage: python3 build.py [OPTIONS]
    -r, --reset         Full clean and rerun setup
    -n, --no-clean      Disable automatically cleaning missing/trailing files and git entries
    -F, --full-clean    Clean everything, including build and lib folders (destructive, back to pre-setup state)
+   -N, --no-build      Don't start build process
 ```
 
 ## Configuration (`build.config.toml`)
