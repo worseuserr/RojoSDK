@@ -29,6 +29,8 @@ NOCLEAN_FLAG=	"--no-clean"
 NOCLEAN_ALT=	"-n"
 FCLEAN_FLAG=	"--full-clean"
 FCLEAN_ALT=		"-F"
+NBUILD_FLAG=	"--no-build"
+NBUILD_ALT=		"-N"
 
 C_EMPHASIS=		Colors.White
 C_PRIMARY=		Colors.Reset
