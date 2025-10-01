@@ -87,15 +87,12 @@ class Shell:
 		if (os.path.isdir(join(".", ".git", "modules", relpath))):
 			shutil.rmtree(join(".", ".git", "modules", relpath), onexc=Shell.RemoveReadonly)
 		relpath = relpath.replace('\\', '/')
-		result = subprocess.run(["git", "submodule", "deinit", "-f", relpath], text=True, capture_output=True)
-		if (Output.LogLevel == "verbose" and len(result.stdout+result.stderr) > 1):
-			Output.Write(f"{C_WARN}\tGit: {result.stdout+result.stderr}")
-		result = subprocess.run(["git", "rm", "-f", relpath], text=True, capture_output=True)
-		if (Output.LogLevel == "verbose" and len(result.stdout+result.stderr) > 1):
-			Output.Write(f"{C_WARN}\tGit: {result.stdout+result.stderr}")
-		result = subprocess.run(["git", "config", "--remove-section", "submodule." + relpath], text=True, capture_output=True)
-		if (Output.LogLevel == "verbose" and len(result.stdout+result.stderr) > 1):
-			Output.Write(f"{C_WARN}\tGit: {result.stdout+result.stderr}")
-		result = subprocess.run(["git", "config", "-f", ".gitmodules", "--remove-section", "submodule." + relpath], text=True, capture_output=True)
-		if (Output.LogLevel == "verbose" and len(result.stdout+result.stderr) > 1):
-			Output.Write(f"{C_WARN}\tGit: {result.stdout+result.stderr}")
+		for result in [
+			subprocess.run(["git", "submodule", "deinit", "-f", relpath], text=True, capture_output=True),
+			subprocess.run(["git", "rm", "-f", relpath], text=True, capture_output=True),
+			subprocess.run(["git", "config", "--remove-section", "submodule." + relpath], text=True, capture_output=True),
+			subprocess.run(["git", "config", "-f", ".gitmodules", "--remove-section", "submodule." + relpath], text=True, capture_output=True),
+			subprocess.run(["git", "rm", "--cached", relpath], text=True, capture_output=True)
+			]:
+			if (Output.LogLevel == "verbose" and len(result.stdout+result.stderr) > 1):
+				Output.Write(f"{C_WARN}\tGit: {result.stdout+result.stderr}")
