@@ -1,5 +1,6 @@
 import stat
-from tools.Constants import C_WARN
+import subprocess
+from tools.Constants import *
 from tools.Output import Output
 from os.path import join
 import os
@@ -56,3 +57,45 @@ class Shell:
 		if (Output.LogLevel == "verbose"):
 			Output.Write(f"{C_WARN}\t{path} permissions overridden for deletion.\n")
 		func(path)
+
+	def NewSubmodule(dep):
+		pair = str.split(dep, '@')
+		name = str.split(pair[0], '/')[1]
+		branch = pair[1] if (len(pair) > 1) else False
+		if (os.path.exists(join(".", LIB, name))):
+			return (False)
+		if (branch):
+			result = subprocess.run(
+				["git", "submodule", "add", "--force", "-b", pair[1], "git@" + pair[0], join('.', LIB, name)],
+				capture_output=True,
+				text=True)
+		else:
+			result = subprocess.run(
+				["git", "submodule", "add", "--force", "git@" + pair[0], join('.', LIB, name)],
+				capture_output=True,
+				text=True)
+		if (Output.LogLevel == "verbose" and len(result.stdout) > 0):
+			Output.Write(f"\n{C_WARN}\tGit: {result.stdout.rstrip('\n')}")
+		if (result.returncode != 0):
+			Output.Write(f"\n{C_BAD}Git error: Code {result.returncode}\nGit: {result.stderr}")
+			exit(code=1)
+		subprocess.run(["git", "restore", "--staged", ".gitmodules"], capture_output=True, text=True)
+		subprocess.run(["git", "restore", "--staged", join(LIB, name)], capture_output=True, text=True)
+		return (True)
+
+	def ClearSubmodule(relpath):
+		if (os.path.isdir(join(".", ".git", "modules", relpath))):
+			shutil.rmtree(join(".", ".git", "modules", relpath), onexc=Shell.RemoveReadonly)
+		relpath = relpath.replace('\\', '/')
+		result = subprocess.run(["git", "submodule", "deinit", "-f", relpath], text=True, capture_output=True)
+		if (Output.LogLevel == "verbose" and len(result.stdout+result.stderr) > 1):
+			Output.Write(f"{C_WARN}\tGit: {result.stdout+result.stderr}")
+		result = subprocess.run(["git", "rm", "-f", relpath], text=True, capture_output=True)
+		if (Output.LogLevel == "verbose" and len(result.stdout+result.stderr) > 1):
+			Output.Write(f"{C_WARN}\tGit: {result.stdout+result.stderr}")
+		result = subprocess.run(["git", "config", "--remove-section", "submodule." + relpath], text=True, capture_output=True)
+		if (Output.LogLevel == "verbose" and len(result.stdout+result.stderr) > 1):
+			Output.Write(f"{C_WARN}\tGit: {result.stdout+result.stderr}")
+		result = subprocess.run(["git", "config", "-f", ".gitmodules", "--remove-section", "submodule." + relpath], text=True, capture_output=True)
+		if (Output.LogLevel == "verbose" and len(result.stdout+result.stderr) > 1):
+			Output.Write(f"{C_WARN}\tGit: {result.stdout+result.stderr}")
