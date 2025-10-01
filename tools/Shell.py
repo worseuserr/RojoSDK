@@ -92,7 +92,6 @@ class Shell:
 			subprocess.run(["git", "rm", "-f", relpath], text=True, capture_output=True),
 			subprocess.run(["git", "config", "--remove-section", "submodule." + relpath], text=True, capture_output=True),
 			subprocess.run(["git", "config", "-f", ".gitmodules", "--remove-section", "submodule." + relpath], text=True, capture_output=True),
-			subprocess.run(["git", "rm", "--cached", relpath], text=True, capture_output=True)
 			]:
 			if (Output.LogLevel == "verbose" and len(result.stdout+result.stderr) > 1):
 				Output.Write(f"{C_WARN}\tGit: {result.stdout+result.stderr}")
