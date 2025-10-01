@@ -11,29 +11,6 @@ class Build:
 	def GetSource(libPath):
 		pass
 
-	def GitClone(dep):
-		pair = str.split(dep, '@')
-		name = str.split(pair[0], '/')[1]
-		branch = pair[1] if (len(pair) > 1) else False
-		if (os.path.exists(join(".", LIB, name))):
-			return (False)
-		if (branch):
-			result = subprocess.run(
-				["git", "submodule", "add", "--force", "-b", pair[1], "git@" + pair[0], join('.', LIB, name)],
-				capture_output=True,
-				text=True)
-		else:
-			result = subprocess.run(
-				["git", "submodule", "add", "--force", "git@" + pair[0], join('.', LIB, name)],
-				capture_output=True,
-				text=True)
-		if (Output.LogLevel == "verbose" and len(result.stdout) > 0):
-			Output.Write(f"\n{C_WARN}\tGit: {result.stdout.rstrip('\n')}")
-		if (result.returncode != 0):
-			Output.Write(f"\n{C_BAD}Git error: Code {result.returncode}\nGit: {result.stderr}")
-			exit(code=1)
-		return (True)
-
 	def Setup(config):
 		Output.Write(f"{C_EMPHASIS}Performing first-time setup...\n")
 		lib = join(".", LIB)
@@ -61,7 +38,7 @@ class Build:
 			Output.Write("Fetching repositories...\n")
 			for dep in config["Dependencies"]:
 				Output.Write(f"{C_EMPHASIS}\tCloning {dep}...")
-				if (Build.GitClone(dep)):
+				if (Shell.NewSubmodule(dep)):
 					Output.WriteInPlace(f"{C_EMPHASIS}\tCloning {dep}... {C_GOOD}OK\n")
 				else:
 					Output.WriteInPlace(f"{C_EMPHASIS}\tCloning {dep}... {C_WARN}ALREADY PRESENT\n")
@@ -96,13 +73,7 @@ class Build:
 					Output.Write(f"{C_PRIMARY}\tSubmodule {path} still exists in lib, skipping.\n")
 				continue
 			Output.Write(f"{C_PRIMARY}\tClearing {relpath} entry...")
-			result = subprocess.run(["git", "submodule", "deinit", "-f", relpath], text=True, capture_output=True)
-			if (Output.LogLevel == "verbose"):
-				Output.Write(f"{C_WARN}\tGit: {result.stdout+result.stderr}")
-			shutil.rmtree(join(".", ".git", "modules", relpath), onexc=Shell.RemoveReadonly)
-			result = subprocess.run(["git", "rm", "-f", relpath], text=True, capture_output=True)
-			if (Output.LogLevel == "verbose"):
-				Output.Write(f"{C_WARN}\tGit: {result.stdout+result.stderr}")
+			Shell.ClearSubmodule(relpath)
 			Output.WriteInPlace(f"{C_PRIMARY}\tClearing {relpath} entry... {C_GOOD}OK\n")
 		Output.Write(f"{C_EMPHASIS}Cleanup finished.\n")
 
