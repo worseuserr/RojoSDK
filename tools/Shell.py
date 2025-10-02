@@ -143,4 +143,5 @@ class Shell:
 		result = func(**kwargs)
 		done = True
 		t.join()
+		Output.WriteInPlace(f"{prepend}  ") # Clear bar
 		return (result)
