@@ -9,14 +9,15 @@
 	DependencyCheckFrequency = "daily"
 
 	# If true, automatically pulls dependency changes when a new commit is found.
-	AutoUpdateDependencies = false
-
-	# If true, removes dependency folders and .gitmodules entries if the
-	# dependency is removed from Dependencies
-	AutoClearDependencies = true
+	AutoUpdateDependencies = true
 
 	# If true, prints a notification during the build if any dependencies are outdated.
+	# This option is overriden by AutoUpdateDependencies.
 	NotifyOutdatedDependencies = true
+
+	# If true, removes dependency Git entries if the
+	# dependency is removed from Dependencies (does not remove from lib/)
+	AutoClearDependencies = true
 
 	# A list of alternate source directories to look for if a dependency
 	# does not have 'build.py' or a 'src' folder.
