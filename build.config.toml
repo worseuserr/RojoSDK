@@ -15,8 +15,8 @@
 	# This option is overriden by AutoUpdateDependencies.
 	NotifyOutdatedDependencies = true
 
-	# If true, removes dependency Git entries if the
-	# dependency is removed from Dependencies (does not remove from lib/)
+	# If true, removes dependency Git entries if the dependency is
+	# removed from Dependencies (does not remove from lib/)
 	AutoClearDependencies = true
 
 	# A list of alternate source directories to look for if a dependency
