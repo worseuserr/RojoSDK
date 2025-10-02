@@ -5,12 +5,9 @@ from datetime import datetime
 import time
 from tools.Shell import Shell
 from tools.Output import Output
-from tools.Constants import BUILD, C_BAD, DEBUG_DELETE_LIB, LIB,C_EMPHASIS,C_WARN,C_PRIMARY,C_GOOD, SDK_NAME,SETUP_FILE, SOURCE, TMP
+from tools.Constants import *
 
 class Build:
-	def GetSource(libPath):
-		pass
-
 	def Setup(config):
 		Output.Write(f"{C_EMPHASIS}Performing first-time setup...\n")
 		lib = join(".", LIB)
@@ -51,12 +48,41 @@ class Build:
 				f"\nThis file marks {SDK_NAME} setup completion.")
 		Output.Write(f"{C_GOOD}Setup complete.\n")
 
-	def GetSources(config): # Barebones version, needs building and update checking support
+	def UpdateSource(path, config):
+		pass
+
+	def GetSource(path, config):
+		const = join(path, "tools", "Constants.py")
+		if (os.path.exists(const)):
+			const = Shell.GetConstants(const)
+			subconfig = Shell.ReadConfig(join(path, const["CONFIG_FILE"]))
+			script = join(const["SDK_SCRIPT"])
+			if (os.path.exists(join(path, script))):
+				src = join(path, const["BUILD"])
+		else:
+			srcs = [join(path, SOURCE)] + config["DependencySources"]
+			for s in srcs:
+				src = join(path, s)
+				if (not os.path.isdir(src)):
+					continue
+				return (src)
+			return
+		# Update
+		if (os.path.exists(join(path, ".git"))):
+			Build.UpdateSource(path, config, subconfig)
+		# Build
+		subprocess.run(["python3", script] + subconfig["BuildOptions"], text=True, capture_output=True)
+		return (src)
+
+	def GetSources(config):
 		sources = list()
 		for source in os.listdir(join(".", LIB)):
-			path = join(".", LIB, source, SOURCE)
-			if (os.path.isdir(path)):
-				sources.append(path)
+			path = join(".", LIB, source)
+			if (not os.path.isdir(path)):
+				continue
+			src = Build.GetSource(path, config)
+			if (src):
+				sources.append(src)
 		return (sources)
 
 	def Cleanup(config):
