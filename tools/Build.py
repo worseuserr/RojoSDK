@@ -125,7 +125,8 @@ class Build:
 			count = sum(1 for _ in os.walk(sourceRoot))
 			i = 0
 			for dirpath, _, filenames in os.walk(sourceRoot):
-				Output.LoadingBar(30, count, i, " " * 10)
+				if (Output.LogLevel != "verbose"):
+					Output.LoadingBar(30, count, i, " " * 10)
 				i += 1
 				for filename in filenames:
 					if (filename == ".gitkeep"):
