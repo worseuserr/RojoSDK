@@ -55,6 +55,8 @@ class Build:
 		const = join(path, "tools", "Constants.py")
 		if (os.path.exists(const)):
 			const = Shell.GetConstants(const)
+			if (Output.LogLevel == "verbose"):
+				Output.Write(f"{C_WARN}Constants: {const}")
 			subconfig = Shell.ReadConfig(join(path, const["CONFIG_FILE"]))
 			script = join(const["SDK_SCRIPT"])
 			if (os.path.exists(join(path, script))):
@@ -69,9 +71,9 @@ class Build:
 			return
 		# Update
 		if (os.path.exists(join(path, ".git"))):
-			Build.UpdateSource(path, config, subconfig)
+			Build.UpdateSource(path, config)
 		# Build
-		subprocess.run(["python3", script] + subconfig["BuildOptions"], text=True, capture_output=True)
+		subprocess.run(["python3", script] + subconfig["BuildOptions"], cwd=path, text=True, capture_output=True)
 		return (src)
 
 	def GetSources(config):
@@ -118,7 +120,11 @@ class Build:
 			Output.Write(f"{C_PRIMARY}Created {tmp} folder.\n")
 		for sourceRoot in [src] + sources:
 			Output.Write(f"{C_PRIMARY}\tProcessing: {sourceRoot}...")
+			count = sum(1 for _ in os.walk(sourceRoot))
+			i = 0
 			for dirpath, _, filenames in os.walk(sourceRoot):
+				Output.LoadingBar(30, count, i, " " * 10)
+				i += 1
 				for filename in filenames:
 					if (filename == ".gitkeep"):
 						if (Output.LogLevel == "verbose"):
@@ -137,7 +143,7 @@ class Build:
 					shutil.copy2(srcPath, destPath)
 					if (Output.LogLevel == "verbose"):
 						Output.Write(f"{C_PRIMARY}\t\tCopied: {srcPath} to {destPath}\n")
-			Output.WriteInPlace(f"{C_PRIMARY}\tProcessing: {sourceRoot}... {C_GOOD}OK\n")
+			Output.WriteInPlace(f"{C_PRIMARY}\tProcessing: {sourceRoot}... {C_GOOD}OK{" " * 10}\n")
 		Output.Write(f"{C_PRIMARY}Clearing build folder...")
 		Shell.ClearDir(build)
 		Output.WriteInPlace(f"{C_PRIMARY}Clearing build folder... {C_GOOD} OK\n")
