@@ -1,11 +1,7 @@
-import stat
-import subprocess
 from tools.Constants import *
 from tools.Output import Output
 from os.path import join
-import os
-import shutil
-import tomllib
+import os, ast, stat, shutil, tomllib, subprocess
 
 class Shell:
 	def ReadConfig(path):
@@ -95,3 +91,15 @@ class Shell:
 			]:
 			if (Output.LogLevel == "verbose" and len(result.stdout+result.stderr) > 1):
 				Output.Write(f"{C_WARN}\tGit: {result.stdout+result.stderr}")
+
+	def GetConstants(path):
+		with open(path, "r") as f:
+			tree = ast.parse(f.read(), filename=path)
+		constants = {}
+		for node in tree.body:
+			if (isinstance(node, ast.Assign)):
+				for target in node.targets:
+					if (isinstance(target, ast.Name)):
+						if (isinstance(node.value, ast.Constant)):
+							constants[target.id] = node.value.value
+		return (constants)
