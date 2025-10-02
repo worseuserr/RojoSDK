@@ -49,14 +49,38 @@ class Build:
 		Output.Write(f"{C_GOOD}Setup complete.\n")
 
 	def UpdateSource(path, config):
-		pass
+		subprocess.run(["git", "fetch"], cwd=path, text=True, capture_output=True)
+		branch = subprocess.run(["git", "rev-parse", "--abbrev-ref", "HEAD"], cwd=path, text=True, capture_output=True)
+		if (branch.returncode != 0):
+			Output.Write(f"{C_BAD}Git returned an error while fetching {path}: {branch.stderr}\n")
+			return
+		count = subprocess.run(["git", "rev-list", "--count", f"{branch.stdout.strip()}..origin/{branch.stdout.strip()}"], cwd=path, text=True, capture_output=True)
+		if (count.returncode != 0):
+			Output.Write(f"{C_BAD}Git returned an error while counting {path}: {branch.stderr}\n")
+			return
+		count = int(count.stdout.strip())
+		if (count < 1):
+			if (Output.LogLevel == "verbose"):
+				Output.Write(f"{C_GOOD}{path} is up-to-date.\n")
+			return
+		if (config["AutoUpdateDependencies"]):
+			Output.Write(f"{C_WARN}\tUpdate: {path} is {count} commits behind HEAD, updating...")
+			result = subprocess.run(["git", "pull"], cwd=path, text=True, capture_output=True)
+			if (result.returncode != 0):
+				Output.Write(f"{C_BAD}Git returned an error while updating {path}: {branch.stderr}\n")
+				return
+			if (Output.LogLevel == "verbose"):
+				Output.Write(f"{C_WARN}Git: {result.stdout}\n")
+			Output.WriteInPlace(f"{C_WARN}\tUpdate: {path} is {count} commits behind HEAD, updating... {C_GOOD}OK\n")
+		else:
+			Output.Write(f"{C_WARN}\tUpdate: {path} is {count} commits behind HEAD.\n")
 
 	def GetSource(path, config):
 		const = join(path, "tools", "Constants.py")
 		if (os.path.exists(const)):
 			const = Shell.GetConstants(const)
 			if (Output.LogLevel == "verbose"):
-				Output.Write(f"{C_WARN}Constants: {const}")
+				Output.Write(f"{C_WARN}Constants: {const}\n")
 			subconfig = Shell.ReadConfig(join(path, const["CONFIG_FILE"]))
 			script = join(const["SDK_SCRIPT"])
 			if (os.path.exists(join(path, script))):
@@ -70,23 +94,29 @@ class Build:
 				if (not os.path.isdir(src)):
 					continue
 				if (Output.LogLevel == "verbose"):
-					Output.Write(f"{C_WARN}Selected source for {path}: {src}")
+					Output.Write(f"{C_WARN}Selected source for {path}: {src}\n")
 				return (src)
-			Output.Write(f"{C_BAD}Could not find any valid source directory for {path}")
+			Output.Write(f"{C_BAD}Could not find any valid source directory for {path}\n")
 			return
 		# Update
-		if (os.path.exists(join(path, ".git"))):
-			Build.UpdateSource(path, config)
+		if (config["NotifyOutdatedDependencies"]):
+			if (Output.LogLevel == "verbose"):
+				Output.Write(f"{C_PRIMARY}Checking {path} for updates...\n")
+			if (os.path.exists(join(path, ".git"))):
+				Build.UpdateSource(path, config)
 		# Build
 		result = subprocess.run(["python3", script] + subconfig["BuildOptions"], cwd=path, text=True, capture_output=True)
 		if (result.returncode != 0):
-			Output.Write(f"{C_BAD}{path} {script} error: {result.stderr}")
+			Output.Write(f"{C_BAD}{path} {script} error: {result.stderr}\n")
 			exit(code=1)
-		if (Output.LogLevel == "verbose"):
-			Output.Write(f"{C_WARN}{path} {script} output: {result.stderr+result.stdout}")
+		# if (Output.LogLevel == "verbose"):
+		# 	Output.Write(f"{C_WARN}{path} {script} output: {result.stderr+result.stdout}\n")
 		return (src)
 
 	def GetSources(config):
+		Output.Write(f"{C_PRIMARY}Getting sources from lib\...\n")
+		if (config["NotifyOutdatedDependencies"]):
+			Output.Write(f"{C_PRIMARY}Checking for dependency updates...\n")
 		sources = list()
 		for source in os.listdir(join(".", LIB)):
 			path = join(".", LIB, source)
