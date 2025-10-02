@@ -111,6 +111,8 @@ class Shell:
 			]:
 			if (Output.LogLevel == "verbose" and len(result.stdout+result.stderr) > 1):
 				Output.Write(f"{C_WARN}\tGit: {result.stdout+result.stderr}")
+		if (os.path.isfile(join(".", relpath, ".git"))):
+			os.remove(join(".", relpath, ".git"))
 
 	def GetConstants(path):
 		with open(path, "r") as f:
