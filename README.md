@@ -15,12 +15,12 @@ A simple, dependency-aware SDK for `Rojo` projects.
 -   **Recursive Builds:** Automatically detects and builds dependencies that also use **RojoSDK**, ensuring you always use their latest build output.
 -   **Declarative Configuration:** All build settings, dependencies, and update policies are managed in a simple `build.config.toml` file.
 -   **Simple CLI:** A straightforward command-line interface for building, cleaning, and managing your project.
--   **Multi-platform:** Natively supports any platform with **python 3.12+** and **git** installed.
+-   **Multi-platform:** Natively supports any platform with **Python 3.12+** and **Git** installed.
 
 ## Getting Started
 
 1.  **Download the latest version from releases.**
-    Make sure you have at least **python 3.12+** installed to run the build script. And **git**, obviously.
+    Make sure you have at least **Python 3.12+** installed to run the build script. And **Git**, obviously.
 
 2.  **Extract and configure:**
     Open `build.config.toml` and configure the settings to your liking. It is recommended to add your project's dependencies before the next step.
@@ -28,8 +28,9 @@ A simple, dependency-aware SDK for `Rojo` projects.
 3.  **Run the initial build script:**
     This command will configure everything and install any dependencies listed in `build.config.toml`.
     ```sh
-    python3 build.py
+    python3 build.py -N
     ```
+	The `-N` option causes the script to not perform the build process after setup. It's optional, but useful if you don't immediately want to build the dependencies.
 
 4.  **Start developing!**
     Your project source code goes in `/src`, and the combined output will appear in `/build` after every run.
