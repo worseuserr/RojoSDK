@@ -62,9 +62,11 @@ class Build:
 			if (os.path.exists(join(path, script))):
 				src = join(path, const["BUILD"])
 		else:
-			srcs = [join(path, SOURCE)] + config["DependencySources"]
-			for s in srcs:
-				src = join(path, s)
+			dependencySources = list()
+			for dep in config["DependencySources"]:
+				dependencySources.append(join(path, dep))
+			srcs = [join(path, SOURCE)] + dependencySources
+			for src in srcs:
 				if (not os.path.isdir(src)):
 					continue
 				return (src)
