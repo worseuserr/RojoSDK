@@ -69,6 +69,8 @@ class Build:
 			for src in srcs:
 				if (not os.path.isdir(src)):
 					continue
+				if (Output.LogLevel == "verbose"):
+					Output.Write(f"{C_WARN}Selected source for {path}: {src}")
 				return (src)
 			return
 		# Update
@@ -77,10 +79,10 @@ class Build:
 		# Build
 		result = subprocess.run(["python3", script] + subconfig["BuildOptions"], cwd=path, text=True, capture_output=True)
 		if (result.returncode != 0):
-			Output.Write(f"{C_BAD} {path} {script} error: {result.stderr}")
+			Output.Write(f"{C_BAD}{path} {script} error: {result.stderr}")
 			exit(code=1)
 		if (Output.LogLevel == "verbose"):
-			Output.Write(f"{C_WARN} {path} {script} output: {result.stderr+result.stdout}")
+			Output.Write(f"{C_WARN}{path} {script} output: {result.stderr+result.stdout}")
 		return (src)
 
 	def GetSources(config):
