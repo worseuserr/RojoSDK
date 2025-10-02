@@ -57,7 +57,7 @@ if (fclean):
 	Output.Write(f"{C_PRIMARY}Performing full clean...\n")
 	Shell.ClearDir(join(".", BUILD))
 	Output.Write(f"{C_PRIMARY}/{BUILD} cleared.\n")
-	Shell.ClearDir(join(".", LIB))
+	Shell.SafeClearDir(join(".", LIB))
 	Output.Write(f"{C_PRIMARY}/{LIB} cleared.\n")
 	if (os.path.exists(join(".", SETUP_FILE))):
 		os.remove(join(".", SETUP_FILE))
