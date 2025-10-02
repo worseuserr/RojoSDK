@@ -72,6 +72,7 @@ class Build:
 				if (Output.LogLevel == "verbose"):
 					Output.Write(f"{C_WARN}Selected source for {path}: {src}")
 				return (src)
+			Output.Write(f"{C_BAD}Could not find any valid source directory for {path}")
 			return
 		# Update
 		if (os.path.exists(join(path, ".git"))):
