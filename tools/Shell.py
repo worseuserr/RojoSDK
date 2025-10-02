@@ -36,6 +36,24 @@ class Shell:
 			if (Output.LogLevel == "verbose"):
 				Output.Write(f"{C_WARN}\tRemoved {path}\n")
 
+	def SafeClearDir(dir):
+		if (not os.path.exists(dir)):
+			Output.Write(f"{C_WARN}Tried to clear non-existant folder ({dir})\n")
+			return
+		for filename in os.listdir(dir):
+			if (filename == ".gitkeep"):
+				continue
+			path = join(dir, filename)
+			if (os.path.isdir(path)):
+				if (os.path.exists(join(path, ".git"))):
+					shutil.rmtree(path, onexc=Shell.RemoveReadonly)
+				else:
+					Output.Write(f"{C_WARN}{path} is not a Git repository and was not removed.\n")
+			else:
+				os.remove(path)
+			if (Output.LogLevel == "verbose"):
+				Output.Write(f"{C_WARN}\tRemoved {path}\n")
+
 	def CopyDir(dir, target):
 		if (not os.path.exists(target)):
 			Output.Write(f"{C_WARN}Tried to copy to non-existant folder ({dir} -> {target})\n")
