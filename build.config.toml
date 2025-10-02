@@ -22,6 +22,10 @@
 	# does not have 'build.py' or a 'src' folder.
 	DependencySources = []
 
+	# A list of options to automatically supply to build.py when it is ran.
+	# Example: ["-v", "--no-cleanup"]
+	BuildOptions = []
+
 	# Sets the default logging verbosity. Can be overridden by the -v flag.
 	# Options: "quiet", "normal", "verbose"
 	LogLevel = "normal"
