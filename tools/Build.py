@@ -1,3 +1,4 @@
+import re
 import shutil
 import os, subprocess, stat
 from os.path import join
@@ -137,13 +138,14 @@ class Build:
 		for submodule in submodules:
 			relpath = os.path.normpath(str.split(submodule, ' ')[1])
 			path = join(".", relpath)
-			if (os.path.exists(path)):
-				if (Output.LogLevel == "verbose"):
-					Output.Write(f"{C_PRIMARY}\tSubmodule {path} still exists in lib, skipping.\n")
+			name = re.split(r"[\\\/]", relpath)[1]
+			if (not os.path.exists(path) or (not any(name in item for item in config["Dependencies"]) and config["AutoClearDependencies"])):
+				Output.Write(f"{C_PRIMARY}\tClearing {relpath} entry...")
+				Shell.PrettyRun(Shell.ClearSubmodule, f"{C_PRIMARY}\tClearing {relpath} entry... ", relpath=relpath)
+				Output.WriteInPlace(f"{C_PRIMARY}\tClearing {relpath} entry... {C_GOOD}OK\n")
 				continue
-			Output.Write(f"{C_PRIMARY}\tClearing {relpath} entry...")
-			Shell.PrettyRun(Shell.ClearSubmodule, f"{C_PRIMARY}\tClearing {relpath} entry... ", relpath=relpath)
-			Output.WriteInPlace(f"{C_PRIMARY}\tClearing {relpath} entry... {C_GOOD}OK\n")
+			if (Output.LogLevel == "verbose"):
+				Output.Write(f"{C_PRIMARY}\tSubmodule {path} still exists in lib, skipping.\n")
 		Output.Write(f"{C_EMPHASIS}Cleanup finished.\n")
 
 	def Build(sources):
