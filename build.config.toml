@@ -9,7 +9,7 @@
 	DependencyCheckFrequency = "daily"
 
 	# If true, automatically pulls dependency changes when a new commit is found.
-	AutoUpdateDependencies = true
+	AutoUpdateDependencies = false
 
 	# If true, prints a notification during the build if any dependencies are outdated.
 	# This option is overriden by AutoUpdateDependencies.
