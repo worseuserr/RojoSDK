@@ -1,3 +1,5 @@
+import threading
+import time
 from tools.Constants import *
 from tools.Output import Output
 from os.path import join
@@ -103,3 +105,22 @@ class Shell:
 						if (isinstance(node.value, ast.Constant)):
 							constants[target.id] = node.value.value
 		return (constants)
+
+	def PrettyRun(func, prepend="", **kwargs):
+		def animate():
+			nonlocal done
+			chars = "|/-\\"
+			i = 0
+			while (not done):
+				Output.WriteInPlace(f"{prepend}{chars[i % len(chars)]}")
+				i += 1
+				time.sleep(0.1)
+		if (Output.LogLevel == "verbose"):
+			return (func(**kwargs))
+		done = False
+		t = threading.Thread(target=animate)
+		t.start()
+		result = func(**kwargs)
+		done = True
+		t.join()
+		return (result)
