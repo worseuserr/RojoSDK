@@ -35,7 +35,7 @@ class Build:
 			Output.Write("Fetching repositories...\n")
 			for dep in config["Dependencies"]:
 				Output.Write(f"{C_EMPHASIS}\tCloning {dep}...")
-				if (Shell.NewSubmodule(dep)):
+				if (Shell.PrettyRun(Shell.NewSubmodule, f"{C_EMPHASIS}\tCloning {dep}... ", dep=dep)):
 					Output.WriteInPlace(f"{C_EMPHASIS}\tCloning {dep}... {C_GOOD}OK\n")
 				else:
 					Output.WriteInPlace(f"{C_EMPHASIS}\tCloning {dep}... {C_WARN}ALREADY PRESENT\n")
@@ -65,7 +65,7 @@ class Build:
 			return
 		if (config["AutoUpdateDependencies"]):
 			Output.Write(f"{C_WARN}\tUpdate: {path} is {count} commits behind HEAD, updating...")
-			result = subprocess.run(["git", "pull"], cwd=path, text=True, capture_output=True)
+			result = Shell.PrettyRun(subprocess.run, f"{C_WARN}\tUpdate: {path} is {count} commits behind HEAD, updating... ", args=["git", "pull"], cwd=path, text=True, capture_output=True)
 			if (result.returncode != 0):
 				Output.Write(f"{C_BAD}Git returned an error while updating {path}: {branch.stderr}\n")
 				return
@@ -141,7 +141,7 @@ class Build:
 					Output.Write(f"{C_PRIMARY}\tSubmodule {path} still exists in lib, skipping.\n")
 				continue
 			Output.Write(f"{C_PRIMARY}\tClearing {relpath} entry...")
-			Shell.ClearSubmodule(relpath)
+			Shell.PrettyRun(Shell.ClearSubmodule, f"{C_PRIMARY}\tClearing {relpath} entry... ", relpath=relpath)
 			Output.WriteInPlace(f"{C_PRIMARY}\tClearing {relpath} entry... {C_GOOD}OK\n")
 		Output.Write(f"{C_EMPHASIS}Cleanup finished.\n")
 
