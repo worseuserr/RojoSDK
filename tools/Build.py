@@ -114,7 +114,7 @@ class Build:
 		return (src)
 
 	def GetSources(config):
-		Output.Write(f"{C_PRIMARY}Getting sources from lib\...\n")
+		Output.Write(f"{C_PRIMARY}Getting sources from lib\\...\n")
 		if (config["NotifyOutdatedDependencies"]):
 			Output.Write(f"{C_PRIMARY}Checking for dependency updates...\n")
 		sources = list()
