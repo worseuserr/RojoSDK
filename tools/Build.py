@@ -2,7 +2,7 @@ import re
 import shutil
 import os, subprocess, stat
 from os.path import join
-from datetime import datetime
+from datetime import datetime, timedelta
 import time
 from tools.Shell import Shell
 from tools.Output import Output
@@ -82,6 +82,20 @@ class Build:
 		else:
 			Output.Write(f"{C_WARN}\tUpdate: {path} is {count} commits behind HEAD.\n")
 
+	def ShouldCheckDependencies(config):
+		if (config["DependencyCheckFrequency"] == "on_build"):
+			return (True)
+		elif (config["DependencyCheckFrequency"] == "never"):
+			return (False)
+		if (not config["DependencyCheckFrequency"] == "daily"):
+			Output.Write(f"{C_BAD}Error: DependencyCheckFrequency is set to an invalid value.")
+			return (False)
+		updateFile = join(".", UPDATE_FILE)
+		diff = datetime.now() - Shell.GetTime(updateFile)
+		if (not os.path.isfile(updateFile) or diff >= timedelta(days=1)):
+			Shell.SetTime(updateFile)
+			return (True)
+
 	def GetSource(path, config):
 		const = join(path, "tools", "Constants.py")
 		if (os.path.exists(const)):
@@ -106,7 +120,7 @@ class Build:
 			Output.Write(f"{C_BAD}Could not find any valid source directory for {path}\n")
 			return
 		# Update
-		if (config["NotifyOutdatedDependencies"] or config["AutoUpdateDependencies"]):
+		if ((config["NotifyOutdatedDependencies"] or config["AutoUpdateDependencies"]) and Build.ShouldCheckDependencies(config)):
 			if (Output.LogLevel == "verbose"):
 				Output.Write(f"{C_PRIMARY}Checking {path} for updates...\n")
 			if (os.path.exists(join(path, ".git"))):
