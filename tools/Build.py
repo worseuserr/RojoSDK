@@ -91,8 +91,7 @@ class Build:
 			Output.Write(f"{C_BAD}Error: DependencyCheckFrequency is set to an invalid value.")
 			return (False)
 		updateFile = join(".", UPDATE_FILE)
-		diff = datetime.now() - Shell.GetTime(updateFile)
-		if (not os.path.isfile(updateFile) or diff >= timedelta(days=1)):
+		if (not os.path.isfile(updateFile) or datetime.now() - Shell.GetTime(updateFile) >= timedelta(days=1)):
 			Shell.SetTime(updateFile)
 			return (True)
 
