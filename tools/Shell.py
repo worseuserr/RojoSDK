@@ -74,12 +74,15 @@ class Shell:
 			Output.Write(f"{C_WARN}\t{path} permissions overridden for deletion.\n")
 		func(path)
 
+	# Returns 0 on success, 1 if present, 2 if present but not a git repository
 	def NewSubmodule(dep):
 		pair = str.split(dep, '@')
 		name = str.split(pair[0], '/')[1]
 		branch = pair[1] if (len(pair) > 1) else False
 		if (os.path.exists(join(".", LIB, name))):
-			return (False)
+			if (os.path.exists(join(".", LIB, name, ".git"))):
+				return (1)
+			return (2)
 		if (branch):
 			result = subprocess.run(
 				["git", "submodule", "add", "--force", "-b", pair[1], "git@" + pair[0], join('.', LIB, name)],
@@ -97,7 +100,7 @@ class Shell:
 			exit(code=1)
 		subprocess.run(["git", "restore", "--staged", ".gitmodules"], capture_output=True, text=True)
 		subprocess.run(["git", "restore", "--staged", join(LIB, name)], capture_output=True, text=True)
-		return (True)
+		return (0)
 
 	def ClearSubmodule(relpath):
 		if (os.path.isdir(join(".", ".git", "modules", relpath))):
