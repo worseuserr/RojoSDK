@@ -136,7 +136,7 @@ class Build:
 
 	def GetSources(config):
 		Output.Write(f"{C_PRIMARY}Getting sources from lib\\...\n")
-		if (config["NotifyOutdatedDependencies"]):
+		if ((config["NotifyOutdatedDependencies"] or config["AutoUpdateDependencies"]) and Build.ShouldCheckDependencies(config, False)):
 			Output.Write(f"{C_PRIMARY}Checking for dependency updates...\n")
 		sources = list()
 		for source in os.listdir(join(".", LIB)):
