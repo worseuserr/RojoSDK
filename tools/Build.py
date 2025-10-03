@@ -9,6 +9,27 @@ from tools.Output import Output
 from tools.Constants import *
 
 class Build:
+	def CheckMissingDependencies(config):
+		if (len(config["Dependencies"]) > 0):
+			Output.Write(f"{C_PRIMARY}Dependencies: [\n")
+			for dep in config["Dependencies"]:
+				Output.Write(f"{C_EMPHASIS}\t\'{dep}\'\n")
+			Output.Write("]\n")
+			Output.Write("Fetching repositories...\n")
+			for dep in config["Dependencies"]:
+				Output.Write(f"{C_EMPHASIS}\tChecking {dep}...")
+				result = Shell.PrettyRun(Shell.NewSubmodule, f"{C_EMPHASIS}\tChecking {dep}... ", dep=dep)
+				if (result == 0):
+					Output.WriteInPlace(f"{C_EMPHASIS}\tChecking {dep}... {C_GOOD}OK\n")
+				elif (result == 1):
+					Output.WriteInPlace(f"{C_EMPHASIS}\tChecking {dep}... {C_GOOD}PRESENT\n")
+				elif (result == 2):
+					Output.WriteInPlace(f"{C_EMPHASIS}\tChecking {dep}... {C_BAD}PRESENT; NOT A GIT REPOSITORY\n")
+			Output.Write(f"{C_PRIMARY}Dependencies cloned.\n")
+		else:
+			Output.Write(f"{C_PRIMARY}Dependencies: []\n")
+			Output.Write(f"{C_WARN}No git dependencies found, proceeding.\n")
+
 	def Setup(config):
 		Output.Write(f"{C_EMPHASIS}Performing first-time setup...\n")
 		lib = join(".", LIB)
@@ -28,22 +49,7 @@ class Build:
 				pass
 			Output.Write(f"{C_PRIMARY}Created new .gitkeep.\n")
 		Output.Write(f"{C_PRIMARY}Created {LIB} folder.\n")
-		if (len(config["Dependencies"]) > 0):
-			Output.Write(f"{C_PRIMARY}Dependencies: [\n")
-			for dep in config["Dependencies"]:
-				Output.Write(f"{C_EMPHASIS}\t\'{dep}\'\n")
-			Output.Write("]\n")
-			Output.Write("Fetching repositories...\n")
-			for dep in config["Dependencies"]:
-				Output.Write(f"{C_EMPHASIS}\tCloning {dep}...")
-				if (Shell.PrettyRun(Shell.NewSubmodule, f"{C_EMPHASIS}\tCloning {dep}... ", dep=dep)):
-					Output.WriteInPlace(f"{C_EMPHASIS}\tCloning {dep}... {C_GOOD}OK\n")
-				else:
-					Output.WriteInPlace(f"{C_EMPHASIS}\tCloning {dep}... {C_WARN}ALREADY PRESENT\n")
-			Output.Write(f"{C_PRIMARY}Dependencies cloned.\n")
-		else:
-			Output.Write(f"{C_PRIMARY}Dependencies: []\n")
-			Output.Write(f"{C_WARN}No git dependencies found, proceeding.\n")
+		Build.CheckMissingDependencies(config)
 		with open(join(".", SETUP_FILE), 'w') as file:
 			file.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S") +
 				f"\nThis file marks {SDK_NAME} setup completion.")
