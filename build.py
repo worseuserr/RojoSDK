@@ -70,6 +70,8 @@ if (fclean and not reset):
 
 if (shouldSetup):
 	Build.Setup(config)
+else:
+	Build.CheckMissingDependencies(config)
 
 sources = Build.GetSources(config)
 if (nobuild):
