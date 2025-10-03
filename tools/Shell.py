@@ -1,9 +1,8 @@
-import threading
-import time
+from datetime import datetime
 from tools.Constants import *
 from tools.Output import Output
 from os.path import join
-import os, ast, stat, shutil, tomllib, subprocess
+import os, ast, stat, shutil, tomllib, subprocess, time, threading
 
 class Shell:
 	def ReadConfig(path):
@@ -148,3 +147,11 @@ class Shell:
 		t.join()
 		Output.WriteInPlace(f"{prepend}  ") # Clear bar
 		return (result)
+
+	def SetTime(file):
+		with open(file, "w") as f:
+			f.write(datetime.now().isoformat())
+
+	def GetTime(file):
+		with open(file, "r") as f:
+			return (datetime.fromisoformat(f.read().strip()))
