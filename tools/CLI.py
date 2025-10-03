@@ -37,6 +37,11 @@ class CLI():
 		def GetValue(self, nextArg):
 			pass
 
+		def GetDefaultValue(self):
+			if (self.Type == ArgType.Bool):
+				return (False)
+			return (None)
+
 		@staticmethod
 		def Get(flagOrAlt):
 			if (flagOrAlt in CLI.Arg.Flags):
@@ -59,6 +64,7 @@ class CLI():
 	# Returns a dictionary with all keys set to the values entered in AddArg
 	def Parse(self, argv):
 		seen = list()
+		remaining = self.Args.copy()
 		result = dict()
 		i = 1 # Skip file arg
 		while (i < len(argv)):
@@ -69,9 +75,13 @@ class CLI():
 				Output.Write(f"{C_BAD}Invalid option: \'{arg}\', use {HELP_FLAG} for usage.\n")
 				exit(code=1)
 			seen.append(obj)
+			remaining.remove(obj)
 			for group in self.Groups:
 				if (group.ConflictsWith(seen)):
 					exit(code=1)
 			result[obj.Key] = obj.GetValue(argv[i])
 			if (obj.Type != ArgType.Bool):
 				i += 1
+		# Set the rest of the args to default values so you don't need to check if a key exists
+		for obj in remaining:
+			result[obj.Key] = obj.GetDefaultValue()
