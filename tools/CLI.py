@@ -4,7 +4,7 @@ from tools.Constants import *
 
 class Conflict(Enum):
 	Error = 0
-	Warn = 1
+	Overlap = 1
 
 class ArgType(Enum):
 	Bool = 0
@@ -14,6 +14,8 @@ class ArgType(Enum):
 	IntArray = 5
 
 class CLI():
+	UsageHint = f"Use {HELP_FLAG} for usage."
+
 	class Group():
 		def __init__(self, confictType, values):
 			self.Values = values
@@ -72,12 +74,12 @@ class CLI():
 			i += 1
 			obj = CLI.Arg.Get(arg)
 			if (not obj):
-				Output.Write(f"{C_BAD}Invalid option: \'{arg}\', use {HELP_FLAG} for usage.\n")
+				Output.Write(f"{C_BAD}Invalid option: \'{arg}\'. {CLI.UsageHint}\n")
 				exit(code=1)
 			seen.append(obj)
 			remaining.remove(obj)
 			for group in self.Groups:
-				if (group.ConflictsWith(seen)):
+				if (group.ConflictsWith(seen)): # Needs better method, store groups seen instead and compare those
 					exit(code=1)
 			result[obj.Key] = obj.GetValue(argv[i])
 			if (obj.Type != ArgType.Bool):
