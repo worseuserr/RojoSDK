@@ -12,13 +12,26 @@ class ArgType(Enum):
 	IntArray = 5
 
 class CLI():
+	class Group():
+		def __init__(self, confictType, values):
+			self.Values = values
+			self.ConflictType = confictType
+
+	class Arg():
+		def __init__(self, flag, alt, key, type):
+			self.Flag = flag
+			self.Alt = alt
+			self.Key = key
+			self.Type = type
+
 	def __init__(self):
 		self.Groups = list()
+		self.Args = list()
 
-	def AddGroup(self, conflictType, *values):
+	def AddGroup(self, conflictType, *args):
 		pass
 
-	# Sets the resulting value of the arg to `key` in Parse()'s result
+	# Sets the resulting value of the arg to `key` in Parse()'s result, returns the Arg object
 	def AddArg(self, flag, alt, key, argtype=ArgType.Bool):
 		pass
 
