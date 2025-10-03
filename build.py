@@ -8,8 +8,8 @@ from tools.Usage import Usage
 
 # INIT
 
-argv = Shell.SplitFlags(sys.argv)
 config = Shell.ReadConfig(join(".", CONFIG_FILE))
+argv = Shell.SplitFlags(sys.argv + config["BuildOptions"])
 
 if (HELP_FLAG in argv or HELP_ALT in argv):
 	print(Usage)

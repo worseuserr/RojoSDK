@@ -126,7 +126,7 @@ class Build:
 			if (os.path.exists(join(path, ".git"))):
 				Build.UpdateSource(path, config)
 		# Build
-		result = subprocess.run(["python3", script] + subconfig["BuildOptions"], cwd=path, text=True, capture_output=True)
+		result = subprocess.run(["python3", script], cwd=path, text=True, capture_output=True)
 		if (result.returncode != 0):
 			Output.Write(f"{C_BAD}{path} {script} error: {result.stderr}\n")
 			exit(code=1)
