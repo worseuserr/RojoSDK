@@ -56,7 +56,6 @@ class Build:
 		Output.Write(f"{C_GOOD}Setup complete.\n")
 
 	def UpdateSource(path, config):
-		# TODO: Implement DependencyCheckFrequency
 		subprocess.run(["git", "fetch"], cwd=path, text=True, capture_output=True)
 		branch = subprocess.run(["git", "rev-parse", "--abbrev-ref", "HEAD"], cwd=path, text=True, capture_output=True)
 		if (branch.returncode != 0):
@@ -107,7 +106,7 @@ class Build:
 			Output.Write(f"{C_BAD}Could not find any valid source directory for {path}\n")
 			return
 		# Update
-		if (config["NotifyOutdatedDependencies"]):
+		if (config["NotifyOutdatedDependencies"] or config["AutoUpdateDependencies"]):
 			if (Output.LogLevel == "verbose"):
 				Output.Write(f"{C_PRIMARY}Checking {path} for updates...\n")
 			if (os.path.exists(join(path, ".git"))):
