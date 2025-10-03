@@ -72,6 +72,6 @@ class CLI():
 			for group in self.Groups:
 				if (group.ConflictsWith(seen)):
 					exit(code=1)
-			result[arg.Key] = arg.GetValue(argv[i])
-			if (arg.Type != ArgType.Bool):
+			result[obj.Key] = obj.GetValue(argv[i])
+			if (obj.Type != ArgType.Bool):
 				i += 1
