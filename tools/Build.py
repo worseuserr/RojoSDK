@@ -82,7 +82,7 @@ class Build:
 		else:
 			Output.Write(f"{C_WARN}\tUpdate: {path} is {count} commits behind HEAD.\n")
 
-	def ShouldCheckDependencies(config):
+	def ShouldCheckDependencies(config, update=False):
 		if (config["DependencyCheckFrequency"] == "on_build"):
 			return (True)
 		elif (config["DependencyCheckFrequency"] == "never"):
@@ -92,7 +92,8 @@ class Build:
 			return (False)
 		updateFile = join(".", UPDATE_FILE)
 		if (not os.path.isfile(updateFile) or datetime.now() - Shell.GetTime(updateFile) >= timedelta(days=1)):
-			Shell.SetTime(updateFile)
+			if (update):
+				Shell.SetTime(updateFile)
 			return (True)
 
 	def GetSource(path, config):
@@ -119,7 +120,7 @@ class Build:
 			Output.Write(f"{C_BAD}Could not find any valid source directory for {path}\n")
 			return
 		# Update
-		if ((config["NotifyOutdatedDependencies"] or config["AutoUpdateDependencies"]) and Build.ShouldCheckDependencies(config)):
+		if ((config["NotifyOutdatedDependencies"] or config["AutoUpdateDependencies"]) and Build.ShouldCheckDependencies(config, True)):
 			if (Output.LogLevel == "verbose"):
 				Output.Write(f"{C_PRIMARY}Checking {path} for updates...\n")
 			if (os.path.exists(join(path, ".git"))):
