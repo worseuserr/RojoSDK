@@ -65,8 +65,10 @@ class CLI():
 			self.Flags[flag] = self
 			self.Alts[alt] = self
 
-		def GetValue(self, nextArg):
-			pass
+		def GetValue(self, nextArg=None):
+			if (self.Type == ArgType.Bool):
+				return (True)
+			return (None)
 
 		def GetDefaultValue(self):
 			if (self.Type == ArgType.Bool):
@@ -84,19 +86,29 @@ class CLI():
 	def __init__(self):
 		self.Groups = list()
 		self.Args = list()
+		self.ExclusiveArgs = list()
 
 	# Takes Arg object returned by AddArg
 	def AddGroup(self, conflictType, *args):
-		pass
+		self.Groups.append(CLI.Group(conflictType, args))
 
 	# Sets the resulting value of the arg to `key` in Parse()'s result, returns the Arg object
 	def AddArg(self, flag, alt, key, argtype=ArgType.Bool):
-		pass
+		result = CLI.Arg(flag, alt, key, argtype)
+		self.Args.append(result)
+		return (result)
+
+	# Adds an exclusive argument, throwing a warning if any other flags are present
+	# exclusive arguments cause Parse to only return that value
+	def AddExclusiveArg(self, flag, alt, key, argtype=ArgType.Bool):
+		result = CLI.Arg(flag, alt, key, argtype)
+		self.ExclusiveArgs.append(result)
+		return (result)
 
 	# Returns a dictionary with all keys set to the values entered in AddArg
 	def Parse(self, argv):
 		seenGroups = list()
-		remaining = self.Args.copy()
+		remaining = self.Args + self.ExclusiveArgs
 		result = dict()
 		i = 1 # Skip file arg
 		while (i < len(argv)):
@@ -106,6 +118,10 @@ class CLI():
 			if (not obj):
 				Output.Write(f"{C_BAD}Invalid option: \'{arg}\'. {CLI.UsageHint}\n")
 				exit(code=1)
+			if (obj in self.ExclusiveArgs):
+				if (len(argv) > 2): # -> Means its not the only option
+					Output.Write(f"{C_WARN}{obj.Flag} ignores all other flags. {CLI.UsageHint}\n")
+				return ({obj.Key: obj.GetValue(argv[i] if len(argv) > i else None)})
 			for groups in seenGroups:
 				for seen in groups:
 					if (seen.Conflict(obj) == Conflict.Error):
@@ -114,9 +130,14 @@ class CLI():
 			if (group):
 				seenGroups.append(group)
 			remaining.remove(obj)
-			result[obj.Key] = obj.GetValue(argv[i])
 			if (obj.Type != ArgType.Bool):
+				if (i >= len(argv)):
+					# TODO: Add error
+					exit(code=1)
+				result[obj.Key] = obj.GetValue(argv[i])
 				i += 1
+			result[obj.Key] = obj.GetValue()
 		# Set the rest of the args to default values so you don't need to check if a key exists
 		for obj in remaining:
 			result[obj.Key] = obj.GetDefaultValue()
+		return (result)
