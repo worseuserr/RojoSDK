@@ -56,14 +56,25 @@ class CLI():
 	class Arg():
 		Flags = dict()
 		Alts = dict()
+		Keys = dict()
 
 		def __init__(self, flag, alt, key, type):
+			if (flag in self.Flags):
+				Output.Write(f"{C_BAD}{flag} flag has already been assigned to an argument. ({self.Flags[flag].Flag}, {self.Flags[flag].Alt})\n")
+				exit(code=1)
+			if (alt in self.Alts):
+				Output.Write(f"{C_BAD}{alt} alt flag has already been assigned to an argument. ({self.Alts[alt].Flag}, {self.Alts[alt].Alt})\n")
+				exit(code=1)
+			if (key in self.Keys):
+				Output.Write(f"{C_BAD}{key} key has already been assigned to an argument. ({self.Keys[key].Flag}, {self.Keys[key].Alt})\n")
+				exit(code=1)
 			self.Flag = flag
 			self.Alt = alt
 			self.Key = key
 			self.Type = type
 			self.Flags[flag] = self
 			self.Alts[alt] = self
+			self.Keys[key] = self
 
 		def GetValue(self, nextArg=None):
 			if (self.Type == ArgType.Bool):
