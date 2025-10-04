@@ -77,7 +77,7 @@ class CLI():
 			self.Keys[key] = self
 
 		def InvalidOptionParameter(self, value):
-			Output.Write(f"{C_BAD}{self.Flag} was given an invalid parameter: '{value}'. {CLI.UsageHint}\n")
+			Output.Write(f"{C_BAD}{self.Flag} parameter is invalid: '{value}'. {CLI.UsageHint}\n")
 			exit(code=1)
 
 		def GetValue(self, nextArg=None):
