@@ -25,9 +25,9 @@ class CLI():
 			self.ConflictType = confictType
 			for val in values:
 				self.Values[val] = True
-				if (not val in CLI.Group.Args):
-					CLI.Group.Args[val] = list()
-				CLI.Group.Args[val].append(self) # Store as hash lookup
+				if (not val in self.Args):
+					self.Args[val] = list()
+				self.Args[val].append(self) # Store as hash lookup
 
 		def __contains__(self, arg):
 			return (arg in self.Values)
@@ -62,8 +62,8 @@ class CLI():
 			self.Alt = alt
 			self.Key = key
 			self.Type = type
-			CLI.Arg.Flags[flag] = self
-			CLI.Arg.Alts[alt] = self
+			self.Flags[flag] = self
+			self.Alts[alt] = self
 
 		def GetValue(self, nextArg):
 			pass
