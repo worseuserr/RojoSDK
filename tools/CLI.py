@@ -132,7 +132,7 @@ class CLI():
 			remaining.remove(obj)
 			if (obj.Type != ArgType.Bool):
 				if (i >= len(argv)):
-					# TODO: Add error
+					Output.Write(f"{C_BAD}{obj.Flag} requires a parameter.\n")
 					exit(code=1)
 				result[obj.Key] = obj.GetValue(argv[i])
 				i += 1
