@@ -170,7 +170,8 @@ class CLI():
 					exit(code=1)
 				result[obj.Key] = obj.GetValue(argv[i])
 				i += 1
-			result[obj.Key] = obj.GetValue()
+			else:
+				result[obj.Key] = obj.GetValue()
 		# Set the rest of the args to default values so you don't need to check if a key exists
 		for obj in remaining:
 			result[obj.Key] = obj.GetDefaultValue()
