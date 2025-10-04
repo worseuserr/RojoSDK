@@ -26,11 +26,11 @@ HELP_ALT=		"-h"
 VERSION_FLAG=	"--version"
 VERSION_ALT=	"-V"
 NOCLEAN_FLAG=	"--no-clean"
-NOCLEAN_ALT=	"-n"
+NOCLEAN_ALT=	"-N"
 FCLEAN_FLAG=	"--full-clean"
 FCLEAN_ALT=		"-F"
 NBUILD_FLAG=	"--no-build"
-NBUILD_ALT=		"-N"
+NBUILD_ALT=		"-n"
 
 C_EMPHASIS=		Colors.White
 C_PRIMARY=		Colors.Reset
