@@ -42,9 +42,9 @@ class CLI():
 			if (arg not in self):
 				return (Conflict.OK)
 			elif (self.ConflictType == Conflict.Overlap):
-				Output.Write(f"{C_WARN}{arg.Flag} shares overlapping functionality with {self.GetFlags(arg.Flag)}. {CLI.UsageHint}\n")
+				Output.Write(f"{C_WARN}{arg.Flag} overlaps with {self.GetFlags(excl=arg.Flag)}; their effects may be redundant. {CLI.UsageHint}\n")
 			elif (self.ConflictType == Conflict.Error):
-				Output.Write(f"{C_BAD}Option {arg.Flag} cannot be used together with {self.GetFlags(arg.Flag)}. {CLI.UsageHint}\n")
+				Output.Write(f"{C_BAD}Option {arg.Flag} cannot be used together with {self.GetFlags(excl=arg.Flag)}. {CLI.UsageHint}\n")
 			return (self.ConflictType)
 
 		def GetFlags(self, excl):
