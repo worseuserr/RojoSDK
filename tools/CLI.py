@@ -5,6 +5,7 @@ from tools.Constants import *
 class Conflict(Enum):
 	Error = 0
 	Overlap = 1
+	OK = 2 # For returning a non-conflicting arg
 
 class ArgType(Enum):
 	Bool = 0
@@ -17,12 +18,40 @@ class CLI():
 	UsageHint = f"Use {HELP_FLAG} for usage."
 
 	class Group():
-		def __init__(self, confictType, values):
-			self.Values = values
-			self.ConflictType = confictType
+		Args = dict()
 
-		def ConflictsWith(self, lst):
-			pass
+		def __init__(self, confictType, values):
+			self.Values = dict()
+			self.ConflictType = confictType
+			for val in values:
+				self.Values[val] = True
+				if (not val in CLI.Group.Args):
+					CLI.Group.Args[val] = list()
+				CLI.Group.Args[val].append(self) # Store as hash lookup
+
+		def __contains__(self, arg):
+			return (arg in self.Values)
+
+		@staticmethod
+		def GetGroups(byArg):
+			if (byArg in CLI.Group.Args):
+				return (CLI.Group.Args[byArg])
+			return (None)
+
+		def Conflict(self, arg):
+			if (arg not in self):
+				return (Conflict.OK)
+			elif (self.ConflictType == Conflict.Overlap):
+				Output.Write(f"{C_WARN}{arg.Flag} shares overlapping functionality with {self.GetFlags(arg.Flag)}. {CLI.UsageHint}\n")
+			elif (self.ConflictType == Conflict.Error):
+				Output.Write(f"{C_BAD}Option {arg.Flag} cannot be used together with {self.GetFlags(arg.Flag)}. {CLI.UsageHint}\n")
+			return (self.ConflictType)
+
+		def GetFlags(self, excl):
+			return ([k.Flag for k in self.Values if k.Flag != excl])
+
+		def GetAlts(self, excl):
+			return ([k.Alt for k in self.Values if k.Alt != excl])
 
 	class Arg():
 		Flags = dict()
@@ -56,6 +85,7 @@ class CLI():
 		self.Groups = list()
 		self.Args = list()
 
+	# Takes Arg object returned by AddArg
 	def AddGroup(self, conflictType, *args):
 		pass
 
@@ -65,7 +95,7 @@ class CLI():
 
 	# Returns a dictionary with all keys set to the values entered in AddArg
 	def Parse(self, argv):
-		seen = list()
+		seenGroups = list()
 		remaining = self.Args.copy()
 		result = dict()
 		i = 1 # Skip file arg
@@ -76,11 +106,14 @@ class CLI():
 			if (not obj):
 				Output.Write(f"{C_BAD}Invalid option: \'{arg}\'. {CLI.UsageHint}\n")
 				exit(code=1)
-			seen.append(obj)
+			for groups in seenGroups:
+				for seen in groups:
+					if (seen.Conflict(obj) == Conflict.Error):
+						exit(code=1)
+			group = CLI.Group.GetGroups(obj)
+			if (group):
+				seenGroups.append(group)
 			remaining.remove(obj)
-			for group in self.Groups:
-				if (group.ConflictsWith(seen)): # Needs better method, store groups seen instead and compare those
-					exit(code=1)
 			result[obj.Key] = obj.GetValue(argv[i])
 			if (obj.Type != ArgType.Bool):
 				i += 1
