@@ -20,9 +20,9 @@ class CLI():
 	class Group():
 		Args = dict()
 
-		def __init__(self, confictType, values):
+		def __init__(self, conflictType, values):
 			self.Values = dict()
-			self.ConflictType = confictType
+			self.ConflictType = conflictType
 			for val in values:
 				self.Values[val] = True
 				if (not val in self.Args):
