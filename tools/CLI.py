@@ -76,10 +76,33 @@ class CLI():
 			self.Alts[alt] = self
 			self.Keys[key] = self
 
+		def InvalidOptionParameter(self, value):
+			Output.Write(f"{C_BAD}{self.Flag} was given an invalid parameter: '{value}'. {CLI.UsageHint}\n")
+			exit(code=1)
+
 		def GetValue(self, nextArg=None):
 			if (self.Type == ArgType.Bool):
 				return (True)
-			return (None)
+			result = None
+			if (self.Type == ArgType.Int):
+				try:
+					result = int(nextArg.strip())
+				except:
+					self.InvalidOptionParameter(nextArg)
+			elif (self.Type == ArgType.String):
+				result = nextArg
+			elif (self.Type == ArgType.IntArray):
+				result = list()
+				for value in (nextArg.strip().split(',')):
+					try:
+						result.append(int(value.strip()))
+					except:
+						self.InvalidOptionParameter(nextArg)
+			elif (self.Type == ArgType.StringArray):
+				result = list()
+				for value in (nextArg.split(',')):
+					result.append(value)
+			return (result)
 
 		def GetDefaultValue(self):
 			if (self.Type == ArgType.Bool):
