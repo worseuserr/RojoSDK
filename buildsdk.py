@@ -47,11 +47,17 @@ class Shell:
 		func(path)
 
 build = join(".", BUILD)
+bin = join(".", BIN)
+sdkmeta = join(build, SDKMETA)
+output = join(bin, NAME)
+
 if (not os.path.isdir(build)):
 	os.mkdir(build)
+if (not os.path.isdir(bin)):
+	os.mkdir(bin)
 
-sdkmeta = join(build, SDKMETA)
 Shell.ClearDir(build)
+Shell.ClearDir(bin)
 Shell.CopyDir(join(".", SDK), build)
 
 for path in FOLDERS_TO_CREATE:
@@ -64,10 +70,7 @@ for file in FILES_TO_SDKMETA:
 		continue
 	shutil.copy2(join(".", file), join(build, SDKMETA, file))
 
-bin = join(".", BIN)
-if (not os.path.isdir(bin)):
-	os.mkdir(bin)
-output = join(bin, NAME)
+# Create zip file
 with ZipFile(output, 'w', compression=ZIP_DEFLATED) as zf:
 	for root, _, files in os.walk(build):
 		for file in files:
