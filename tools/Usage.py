@@ -14,6 +14,6 @@ Usage = f"""
    -f, --force-setup   Force first-build setup to run before building
    -v, --verbose       Enable more verbose output
    -r, --reset         Full clean and rerun setup
-   -n, --no-clean      Disable automatically cleaning missing/trailing files and git entries
+   -N, --no-clean      Disable automatically cleaning missing/trailing files and git entries
    -F, --full-clean    Clean everything, including {BUILD} and {LIB} folders (destructive, back to pre-setup state)
-   -N, --no-build      Don't start build process{Colors.Reset}"""
+   -n, --no-build      Don't start build process{Colors.Reset}"""

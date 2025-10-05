@@ -3,7 +3,7 @@
 A simple, dependency-aware SDK for `Rojo` projects.
 
 [![License](https://img.shields.io/badge/license-MIT-blue)](./.sdk/LICENSE)
-[![Version](https://img.shields.io/badge/version-1.0.0-informational)](./build.config.toml)
+[![Version](https://img.shields.io/badge/version-1.1.1-informational)](./build.config.toml)
 
 **RojoSDK** simplifies project development by managing dependencies as Git submodules and merging all source files into a single, clean `build/` directory, keeping your work-in-progress code separate from the live version.
 
@@ -80,9 +80,9 @@ Usage: python3 build.py [OPTIONS]
    -f, --force-setup   Force first-build setup to run before building
    -v, --verbose       Enable more verbose output
    -r, --reset         Full clean and rerun setup
-   -n, --no-clean      Disable automatically cleaning missing/trailing files and git entries
+   -N, --no-clean      Disable automatically cleaning missing/trailing files and git entries
    -F, --full-clean    Clean everything, including build and lib folders (destructive, back to pre-setup state)
-   -N, --no-build      Don't start build process
+   -n, --no-build      Don't start build process
 ```
 
 ## Configuration (`build.config.toml`)

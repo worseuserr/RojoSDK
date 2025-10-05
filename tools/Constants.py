@@ -2,7 +2,7 @@ import os
 from tools.Output import Colors
 
 SDK_NAME=		"RojoSDK"
-SDK_VERSION=	"1.0.0"
+SDK_VERSION=	"1.1.1"
 SDK_SCRIPT=		"build.py"
 
 BUILD=			"build"
@@ -21,16 +21,16 @@ VERBOSE_FLAG=	"--verbose"
 VERBOSE_ALT=	"-v"
 RESET_FLAG=		"--reset"
 RESET_ALT=		"-r"
+NOCLEAN_FLAG=	"--no-clean"
+NOCLEAN_ALT=	"-N"
+FCLEAN_FLAG=	"--full-clean"
+FCLEAN_ALT=		"-F"
+NBUILD_FLAG=	"--no-build"
+NBUILD_ALT=		"-n"
 HELP_FLAG=		"--help"
 HELP_ALT=		"-h"
 VERSION_FLAG=	"--version"
 VERSION_ALT=	"-V"
-NOCLEAN_FLAG=	"--no-clean"
-NOCLEAN_ALT=	"-n"
-FCLEAN_FLAG=	"--full-clean"
-FCLEAN_ALT=		"-F"
-NBUILD_FLAG=	"--no-build"
-NBUILD_ALT=		"-N"
 
 C_EMPHASIS=		Colors.White
 C_PRIMARY=		Colors.Reset
@@ -38,5 +38,5 @@ C_GOOD=			Colors.Green
 C_WARN=			Colors.Yellow
 C_BAD=			Colors.Red
 
-# Only for SDK debugging, this will delete /lib on setup
+# Only for SDK debugging, this will delete lib/ on setup
 DEBUG_DELETE_LIB=	False
