@@ -1,7 +1,7 @@
-import json
+from datetime import datetime
 from zipfile import ZipFile, ZIP_DEFLATED
 from os.path import join
-import os, shutil, stat
+import os, shutil, stat, json, sys
 
 # Script for building the SDK into a releasable state.
 # It will create all necessary empty folders and package everything
@@ -20,8 +20,13 @@ PROJECTFILE="build.project.json"
 FOLDERS_TO_CREATE=	["lib", "src", "build", SDKMETA]
 FILES_TO_SDKMETA=	["LICENSE", "README.md"]
 
-# From tools.Shell
+# From sdk.tools
 class Shell:
+	def Write(msg):
+		append = f"\033[33m[" + datetime.now().strftime("%H:%M:%S.%f")[:-3] + f"] \033[0m"
+		sys.stdout.write(append + str.replace(msg, '\t', "   ") + "\033[0m")
+		sys.stdout.flush()
+
 	def CopyDir(dir, target):
 		if (not os.path.exists(target)):
 			return
