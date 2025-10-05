@@ -59,25 +59,38 @@ bin = join(".", BIN)
 sdkmeta = join(build, SDKMETA)
 output = join(bin, NAME)
 
+Shell.Write("Building SDK with vars:\n")
+Shell.Write(f"\tbuild: {build}\n")
+Shell.Write(f"\tbin: {bin}\n")
+Shell.Write(f"\tsdkmeta: {sdkmeta}\n")
+Shell.Write(f"\toutput: {output}\n")
+
 if (not os.path.isdir(build)):
 	os.mkdir(build)
 if (not os.path.isdir(bin)):
 	os.mkdir(bin)
 
+Shell.Write(f"Clearing build...\n")
 Shell.ClearDir(build)
+Shell.Write(f"Clearing bin...\n")
 Shell.ClearDir(bin)
+Shell.Write(f"Copying SDK to build...\n")
 Shell.CopyDir(join(".", SDK), build)
+Shell.Write(f"Done.\n")
 
+Shell.Write(f"Creating empty folders...\n")
 for path in FOLDERS_TO_CREATE:
 	if (os.path.isdir(join(build, path))):
 		continue
 	os.mkdir(join(build, path))
 
+Shell.Write(f"Copying SDK meta files...\n")
 for file in FILES_TO_SDKMETA:
 	if (os.path.isfile(join(build, SDKMETA, file))):
 		continue
 	shutil.copy2(join(".", file), join(build, SDKMETA, file))
 
+Shell.Write(f"Creating src folders...\n")
 with open(join(".", SDK, PROJECTFILE)) as file:
 	project = json.load(file)
 
@@ -89,7 +102,9 @@ for key, value in project["tree"].items():
 		if (not isinstance(v, dict)):
 			continue
 		os.mkdir(join(build, SRC, key, k))
+Shell.Write(f"Done.\n")
 
+Shell.Write(f"Creating SDK zip...\n")
 # Create zip file
 with ZipFile(output, 'w', compression=ZIP_DEFLATED) as zf:
 	for root, dirs, files in os.walk(build):
@@ -104,3 +119,4 @@ with ZipFile(output, 'w', compression=ZIP_DEFLATED) as zf:
 			if (not os.listdir(dir_path)):
 				arcname = os.path.relpath(dir_path, build) + '/'
 				zf.writestr(arcname, '')
+Shell.Write(f"Build completed. Output: {output}\n")
