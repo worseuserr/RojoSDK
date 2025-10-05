@@ -72,8 +72,15 @@ for file in FILES_TO_SDKMETA:
 
 # Create zip file
 with ZipFile(output, 'w', compression=ZIP_DEFLATED) as zf:
-	for root, _, files in os.walk(build):
+	for root, dirs, files in os.walk(build):
+		# Add files
 		for file in files:
 			file_path = os.path.join(root, file)
-			arcname = os.path.relpath(file_path, output)
+			arcname = os.path.relpath(file_path, build)
 			zf.write(file_path, arcname)
+		# Add empty directories
+		for dir in dirs:
+			dir_path = os.path.join(root, dir)
+			if (not os.listdir(dir_path)):
+				arcname = os.path.relpath(dir_path, build) + '/'
+				zf.writestr(arcname, '')
