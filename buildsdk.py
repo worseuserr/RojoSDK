@@ -94,6 +94,7 @@ Shell.Write(f"Creating src folders...\n")
 with open(join(".", SDK, PROJECTFILE)) as file:
 	project = json.load(file)
 
+# Note: this only recursively reads 1 layer deep
 for key, value in project["tree"].items():
 	if (not isinstance(value, dict)):
 		continue
