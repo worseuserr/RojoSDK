@@ -31,11 +31,11 @@ cli.AddGroup(Conflict.Overlap, a_Reset, a_Force)
 
 args = cli.Parse(argv)
 
-if ("Help" in args):
+if ("Help" in args and args["Help"]):
 	print(Usage)
 	exit(code=0)
 
-if ("Version" in args):
+if ("Version" in args and args["Version"]):
 	print(f"{C_EMPHASIS}Using {SDK_NAME} version {Colors.Yellow}{SDK_VERSION}{C_EMPHASIS} by worseuserr.{Colors.Reset}")
 	exit(code=0)
 
