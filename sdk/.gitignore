@@ -1,0 +1,5 @@
+# RojoSDK gitignores
+build/*
+tools/*.txt
+__pycache__/
+!.gitkeep
