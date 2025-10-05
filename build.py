@@ -1,5 +1,6 @@
 import os, sys
 from os.path import join
+from tools.CLI import *
 from tools.Shell import Shell
 from tools.Output import Colors, Output
 from tools.Build import Build
@@ -10,50 +11,51 @@ from tools.Usage import Usage
 
 config = Shell.ReadConfig(join(".", CONFIG_FILE))
 argv = Shell.SplitFlags(sys.argv + config["BuildOptions"])
+cli = CLI()
 
-if (HELP_FLAG in argv or HELP_ALT in argv):
+a_Skip=			cli.AddArg(SKIP_FLAG, SKIP_ALT, "Skip")
+a_Force=		cli.AddArg(FORCE_FLAG, FORCE_ALT, "Force")
+a_Verbose=		cli.AddArg(VERBOSE_FLAG, VERBOSE_ALT, "Verbose")
+a_Reset=		cli.AddArg(RESET_FLAG, RESET_ALT, "Reset")
+a_Noclean=		cli.AddArg(NOCLEAN_FLAG, NOCLEAN_ALT, "Noclean")
+a_Fullclean=	cli.AddArg(FCLEAN_FLAG, FCLEAN_ALT, "Fullclean")
+a_Nobuild=		cli.AddArg(NBUILD_FLAG, NBUILD_ALT, "Nobuild")
+a_Help=			cli.AddExclusiveArg(HELP_FLAG, HELP_ALT, "Help")
+a_Version=		cli.AddExclusiveArg(VERSION_FLAG, VERSION_ALT, "Version")
+
+cli.AddGroup(Conflict.Error, a_Skip, a_Force)
+cli.AddGroup(Conflict.Error, a_Skip, a_Reset)
+cli.AddGroup(Conflict.Error, a_Fullclean, a_Noclean)
+cli.AddGroup(Conflict.Overlap, a_Reset, a_Fullclean)
+cli.AddGroup(Conflict.Overlap, a_Reset, a_Force)
+
+args = cli.Parse(argv)
+
+if ("Help" in args):
 	print(Usage)
 	exit(code=0)
 
-if (VERSION_FLAG in argv or VERSION_ALT in argv):
+if ("Version" in args):
 	print(f"{C_EMPHASIS}Using {SDK_NAME} version {Colors.Yellow}{SDK_VERSION}{C_EMPHASIS} by worseuserr.{Colors.Reset}")
 	exit(code=0)
 
 isFirstLaunch = not os.path.exists(join(".", SETUP_FILE))
-force = FORCE_FLAG in argv or FORCE_ALT in argv
-skip = SKIP_FLAG in argv or SKIP_ALT in argv
-reset = RESET_FLAG in argv or RESET_ALT in argv
-noclean = NOCLEAN_FLAG in argv or NOCLEAN_ALT in argv
-fclean = FCLEAN_FLAG in argv or FCLEAN_ALT in argv
-shouldSetup = (force or reset) or (isFirstLaunch and not skip)
-nobuild = NBUILD_FLAG in argv or NBUILD_ALT in argv
+shouldSetup = (args["Force"] or args["Reset"]) or (isFirstLaunch and not args["Skip"])
 
-# OPTION COMPATS
-
-if ((force or reset) and skip):
-	Output.Write(f"{C_BAD}Error: {SKIP_FLAG} ({SKIP_ALT}) and {FORCE_FLAG if force else RESET_FLAG} ({FORCE_ALT if force else RESET_ALT}) cannot be passed simultaneously. Use {HELP_FLAG} or {HELP_ALT} for usage.\n")
-	exit(code=1)
-
-if (fclean and noclean):
-	Output.Write(f"{C_WARN}Warn: {FCLEAN_FLAG} ({FCLEAN_ALT}) takes priority over {NOCLEAN_FLAG} ({NOCLEAN_ALT}). Use {HELP_FLAG} or {HELP_ALT} for usage.\n")
-
-if ((fclean or force) and reset):
-	Output.Write(f"{C_WARN}Warn: {FORCE_FLAG} ({FORCE_ALT}) and {FCLEAN_FLAG} ({FCLEAN_ALT}) are unnecessary with {RESET_FLAG} ({RESET_ALT}). Use {HELP_FLAG} or {HELP_ALT} for usage.\n")
-
-if (VERBOSE_FLAG in argv or VERBOSE_ALT in argv):
+if (args["Verbose"]):
 	Output.LogLevel = "verbose"
 else:
 	Output.LogLevel = config["LogLevel"]
 
-if (reset):
-	fclean = True
+if (args["Reset"]):
+	args["Fclean"] = True
 
 # BUILD
 
 Output.Write(f"{C_EMPHASIS}Started build using SDK version {SDK_VERSION}\n")
 
-if (fclean):
-	noclean = False
+if (args["Fclean"]):
+	args["Noclean"] = False
 	Output.Write(f"{C_PRIMARY}Performing full clean...\n")
 	Shell.ClearDir(join(".", BUILD))
 	Output.Write(f"{C_PRIMARY}/{BUILD} cleared.\n")
@@ -62,9 +64,9 @@ if (fclean):
 	if (os.path.exists(join(".", SETUP_FILE))):
 		os.remove(join(".", SETUP_FILE))
 		Output.Write(f"{C_PRIMARY}Removed setup marker.\n")
-if (not noclean):
+if (not args["Noclean"]):
 	Build.Cleanup(config)
-if (fclean and not reset):
+if (args["Fclean"] and not args["Reset"]):
 	Output.Write(f"{C_EMPHASIS}Full clean completed.\n")
 	exit(code=0)
 
@@ -74,6 +76,6 @@ else:
 	Build.CheckMissingDependencies(config)
 
 sources = Build.GetSources(config)
-if (nobuild):
+if (args["Nobuild"]):
 	exit(code=0)
 Build.Build(sources)
