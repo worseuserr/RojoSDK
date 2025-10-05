@@ -48,13 +48,13 @@ else:
 	Output.LogLevel = config["LogLevel"]
 
 if (args["Reset"]):
-	args["Fclean"] = True
+	args["Fullclean"] = True
 
 # BUILD
 
 Output.Write(f"{C_EMPHASIS}Started build using SDK version {SDK_VERSION}\n")
 
-if (args["Fclean"]):
+if (args["Fullclean"]):
 	args["Noclean"] = False
 	Output.Write(f"{C_PRIMARY}Performing full clean...\n")
 	Shell.ClearDir(join(".", BUILD))
@@ -66,7 +66,7 @@ if (args["Fclean"]):
 		Output.Write(f"{C_PRIMARY}Removed setup marker.\n")
 if (not args["Noclean"]):
 	Build.Cleanup(config)
-if (args["Fclean"] and not args["Reset"]):
+if (args["Fullclean"] and not args["Reset"]):
 	Output.Write(f"{C_EMPHASIS}Full clean completed.\n")
 	exit(code=0)
 
