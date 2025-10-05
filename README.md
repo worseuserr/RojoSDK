@@ -28,9 +28,9 @@ A simple, dependency-aware SDK for `Rojo` projects.
 3.  **Run the initial build script:**
     This command will configure everything and install any dependencies listed in `build.config.toml`.
     ```sh
-    python3 build.py -N
+    python3 build.py -n
     ```
-	The `-N` option causes the script to not perform the build process after setup. It's optional, but useful if you don't immediately want to build the dependencies.
+	The `-n` option causes the script to not perform the build process after setup. It's optional, but useful if you don't immediately want to build the dependencies.
 
 4.  **Start developing!**
     Your project source code goes in `src/`, and the combined output will appear in `build/` after every run.
