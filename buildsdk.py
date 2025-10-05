@@ -1,3 +1,4 @@
+import json
 from zipfile import ZipFile, ZIP_DEFLATED
 from os.path import join
 import os, shutil, stat
@@ -9,11 +10,13 @@ import os, shutil, stat
 # BUILD is where you can freely test the built SDK.
 # BIN is where the zip file is created.
 
-BUILD=	"build"
-BIN=	"bin"
-NAME=	"RojoSDK-v.zip"
-SDK=	"sdk"
-SDKMETA=".sdk"
+BUILD=		"build"
+BIN=		"bin"
+NAME=		"RojoSDK-v.zip"
+SDK=		"sdk"
+SRC=		"src"
+SDKMETA=	".sdk"
+PROJECTFILE="build.project.json"
 FOLDERS_TO_CREATE=	["lib", "src", "build", SDKMETA]
 FILES_TO_SDKMETA=	["LICENSE", "README.md"]
 
@@ -69,6 +72,18 @@ for file in FILES_TO_SDKMETA:
 	if (os.path.isfile(join(build, SDKMETA, file))):
 		continue
 	shutil.copy2(join(".", file), join(build, SDKMETA, file))
+
+with open(join(".", SDK, PROJECTFILE)) as file:
+	project = json.load(file)
+
+for key, value in project["tree"].items():
+	if (not isinstance(value, dict)):
+		continue
+	os.mkdir(join(build, SRC, key))
+	for k, v in value.items():
+		if (not isinstance(v, dict)):
+			continue
+		os.mkdir(join(build, SRC, key, k))
 
 # Create zip file
 with ZipFile(output, 'w', compression=ZIP_DEFLATED) as zf:
