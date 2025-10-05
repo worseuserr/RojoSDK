@@ -2,7 +2,7 @@
 	# A list of Git repositories to include as dependencies.
 	# Format: "remote:username/repo@branch"
 	# Example: ["github.com:worseuserr/RojoSDK@main"]
-	Dependencies = []
+	Dependencies = ["github.com:worseuserr/RojoSDK@main"]
 
 	# How often to check for dependency updates.
 	# Options: "never", "daily", "on_build"
