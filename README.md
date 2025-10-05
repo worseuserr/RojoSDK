@@ -2,7 +2,7 @@
 
 A simple, dependency-aware SDK for `Rojo` projects.
 
-[![License](https://img.shields.io/badge/license-MIT-blue)](./.sdk/LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-blue)](./LICENSE)
 [![Version](https://img.shields.io/badge/version-1.1.1-informational)](./build.config.toml)
 
 **RojoSDK** simplifies project development by managing dependencies as Git submodules and merging all source files into a single, clean `build/` directory, keeping your work-in-progress code separate from the live version.
@@ -95,4 +95,4 @@ Contributions are welcome! Please feel free to submit a pull request or open an 
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](./.sdk/LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
