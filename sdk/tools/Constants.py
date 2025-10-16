@@ -38,5 +38,8 @@ C_GOOD=			Colors.Green
 C_WARN=			Colors.Yellow
 C_BAD=			Colors.Red
 
+# Filenames to ignore when checking collisions during build (only first instance is used)
+ALLOWED_DUPLICATES=	["init.meta.json"]
+
 # Only for SDK debugging, this will delete lib/ on setup
 DEBUG_DELETE_LIB=	False
