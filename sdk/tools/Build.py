@@ -196,7 +196,7 @@ class Build:
 					srcPath = os.path.join(dirpath, filename)
 					relativePath = os.path.relpath(srcPath, start=sourceRoot)
 					destPath = os.path.join(tmp, relativePath)
-					if (destPath in seenDestPaths):
+					if (destPath in seenDestPaths and not Build.IsDuplicateAllowed(destPath)):
 						Output.WriteInPlace(f"{C_PRIMARY}\tProcessing: {sourceRoot}... {C_BAD}FAIL\n")
 						Output.Write(f"{C_BAD}Build failed: File '{relativePath}' exists in multiple sources.\n")
 						shutil.rmtree(tmp, onexc=Shell.RemoveReadonly)
@@ -216,3 +216,6 @@ class Build:
 		shutil.rmtree(tmp, onexc=Shell.RemoveReadonly)
 		Output.Write(f"{C_PRIMARY}Removed {TMP}.\n")
 		Output.Write(f"{C_EMPHASIS}Build completed in {time.time() - startTime:.4f} seconds.\n")
+
+	def IsDuplicateAllowed(path):
+		return (os.path.basename(path) in ALLOWED_DUPLICATES)
