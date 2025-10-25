@@ -1,6 +1,6 @@
 # RojoSDK
 
-A simple, dependency-aware SDK for `Rojo` projects.
+A simple, dependency-aware SDK for [**Rojo+**](https://github.com/worseuserr/RojoPlus) projects.
 
 [![License](https://img.shields.io/badge/license-MIT-blue)](./LICENSE)
 [![Version](https://img.shields.io/badge/version-1.2.1-informational)](./build.config.toml)
@@ -9,7 +9,7 @@ A simple, dependency-aware SDK for `Rojo` projects.
 
 ## Key Features
 
--   **Decoupled Workflow:** Work safely in `src/` while `Rojo` streams the stable `build/` directory. This prevents half-written or broken code from affecting your running instance.
+-   **Decoupled Workflow:** Work safely in `src/` while **Rojo+** streams the stable `build/` directory. This prevents half-written or broken code from affecting your running instance.
 -   **Unified Build Directory:** Merges your project's `src/` with the source folders of all dependencies into a single `build/` output.
 -   **Git Submodule Dependencies:** Manages project dependencies declared in `build.config.toml` as Git submodules in the `lib/` directory.
 -   **Recursive Builds:** Automatically detects and builds dependencies that also use **RojoSDK**, ensuring you always use their latest build output.
@@ -18,7 +18,7 @@ A simple, dependency-aware SDK for `Rojo` projects.
 -   **Multi-platform:** Natively supports any platform with **Rojo+**, **Python 3.12+** and **Git** installed.
 
 ## Requirements
--	**Rojo+** - A fork of Rojo which adds a feature required for the building process to work. -> https://github.com/worseuserr/RojoPlus
+-	[**Rojo+**](https://github.com/worseuserr/RojoPlus) - A fork of [**Rojo**](https://github.com/rojo-rbx/rojo) which adds a feature required for the building process to work. -> https://github.com/worseuserr/RojoPlus
 -	**Git** - Will otherwise error when checking libs with git, this may become optional in the future.
 -	**Python3.12+** - For the scripts to work.
 
@@ -39,7 +39,7 @@ A simple, dependency-aware SDK for `Rojo` projects.
 
 4.  **Start developing!**
     Your project source code goes in `src/`, and the combined output will appear in `build/` after every run.
-    Serve `build.project.json` to `Rojo` and all your build files will be synced.
+    Serve `build.project.json` to **Rojo+** and all your build files will be synced.
 
 ## How It Works
 
@@ -54,14 +54,15 @@ The script scans your `src/` directory and all dependency directories inside `li
 **Input:**
 ```
 - /MyNewProject
-   - /src
-      - /ReplicatedStorage
-         - SmoothCamera.lua
    - /lib
       - /MyLibrary
          - /src
             - /ReplicatedStorage
                - BaseCamera.lua
+   - /src
+      - /ReplicatedStorage
+         - SmoothCamera.lua
+
 ```
 
 **Output of `python3 build.py`:**
@@ -96,7 +97,7 @@ All project settings are managed in the `build.config.toml` file.
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a pull request or open an issue to discuss your ideas.
+Contributions are welcome! Please feel free to submit a pull request or open an issue.
 
 ## License
 
