@@ -11,7 +11,7 @@ import os, shutil, stat, json, sys
 # BIN is where the zip file is created.
 
 BUILD=		"build"
-BIN=		"bin"
+BIN=		"dist"
 NAME=		"RojoSDK-v.zip"
 SDK=		"sdk"
 SRC=		"src"
