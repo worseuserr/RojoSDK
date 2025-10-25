@@ -3,7 +3,7 @@
 A simple, dependency-aware SDK for [**Rojo+**](https://github.com/worseuserr/RojoPlus) projects.
 
 [![License](https://img.shields.io/badge/license-MIT-blue)](./LICENSE)
-[![Version](https://img.shields.io/badge/version-1.2.1-informational)](./build.config.toml)
+[![Version](https://img.shields.io/badge/version-1.3.0-informational)](./sdk/build.config.toml)
 
 **RojoSDK** simplifies project development by managing dependencies as Git submodules and merging all source files into a single, clean `build/` directory, keeping your work-in-progress code separate from the live version.
 
@@ -18,9 +18,9 @@ A simple, dependency-aware SDK for [**Rojo+**](https://github.com/worseuserr/Roj
 -   **Multi-platform:** Natively supports any platform with **Rojo+**, **Python 3.12+** and **Git** installed.
 
 ## Requirements
--	[**Rojo+**](https://github.com/worseuserr/RojoPlus) - A fork of [**Rojo**](https://github.com/rojo-rbx/rojo) which adds a feature required for the building process to work. -> https://github.com/worseuserr/RojoPlus
--	**Git** - Will otherwise error when checking libs with git, this may become optional in the future.
--	**Python3.12+** - For the scripts to work.
+-	[**Rojo+**](https://github.com/worseuserr/RojoPlus) - A fork of [**Rojo**](https://github.com/rojo-rbx/rojo) which adds a feature required for the building process to work.
+-	[**Git**](https://git-scm.com/) - Will otherwise error when checking libs with git, this may become optional in the future.
+-	[**Python3.12+**](https://www.python.org/) - For the scripts to work.
 
 ## Getting Started
 

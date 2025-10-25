@@ -2,7 +2,7 @@ import os
 from tools.Output import Colors
 
 SDK_NAME=		"RojoSDK"
-SDK_VERSION=	"1.2.1"
+SDK_VERSION=	"1.3.0"
 SDK_SCRIPT=		"build.py"
 
 BUILD=			"build"
