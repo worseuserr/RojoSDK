@@ -211,12 +211,15 @@ class Build:
 		Output.Write(f"{C_PRIMARY}Clearing build folder...")
 		Shell.ClearDir(build)
 		Output.WriteInPlace(f"{C_PRIMARY}Clearing build folder... {C_GOOD} OK\n")
-		Output.Write(f"{C_PRIMARY}Copying new files...")
-		Shell.CopyDir(tmp, build)
-		Output.WriteInPlace(f"{C_PRIMARY}Copying new files... {C_GOOD} OK\n")
+		Output.Write(f"{C_PRIMARY}Updating build tree...")
+		Build.UpdateBuildTree(tmp, build)
+		Output.WriteInPlace(f"{C_PRIMARY}Updating build tree... {C_GOOD} OK\n")
 		shutil.rmtree(tmp, onexc=Shell.RemoveReadonly)
 		Output.Write(f"{C_PRIMARY}Removed {TMP}.\n")
 		Output.Write(f"{C_EMPHASIS}Build completed in {time.time() - startTime:.4f} seconds.\n")
+
+	def UpdateBuildTree(new, build):
+		pass
 
 	def IsDuplicateAllowed(path):
 		return (os.path.basename(path) in ALLOWED_DUPLICATES)
