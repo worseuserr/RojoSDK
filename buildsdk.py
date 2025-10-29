@@ -95,7 +95,7 @@ with open(join(".", SDK, PROJECTFILE)) as file:
 	project = json.load(file)
 
 # This only recurses 1 layer deep
-# Copies subdirectories in build.project.json
+# Copies subdirectories in default.project.json
 for key, value in project["tree"].items():
 	if (not isinstance(value, dict)):
 		continue
