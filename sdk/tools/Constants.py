@@ -12,7 +12,6 @@ TMP=			"tmp"
 CONFIG_FILE=	"build.config.toml"
 SETUP_FILE=		os.path.normpath("tools/.setupmarker.txt")
 UPDATE_FILE=	os.path.normpath("tools/.lastupdate.txt")
-STREAM_LOCK=	"STREAM_LOCK"
 
 SKIP_FLAG=		"--skip-setup"
 SKIP_ALT=		"-s"

@@ -208,7 +208,6 @@ class Build:
 					if (Output.LogLevel == "verbose"):
 						Output.Write(f"{C_PRIMARY}\t\tCopied: {srcPath} to {destPath}\n")
 			Output.WriteInPlace(f"{C_PRIMARY}\tProcessing: {sourceRoot}... {C_GOOD}OK{" " * 10}\n")
-		Build.StreamLock()
 		Output.Write(f"{C_PRIMARY}Clearing build folder...")
 		Shell.ClearDir(build)
 		Output.WriteInPlace(f"{C_PRIMARY}Clearing build folder... {C_GOOD} OK\n")
@@ -217,16 +216,7 @@ class Build:
 		Output.WriteInPlace(f"{C_PRIMARY}Copying new files... {C_GOOD} OK\n")
 		shutil.rmtree(tmp, onexc=Shell.RemoveReadonly)
 		Output.Write(f"{C_PRIMARY}Removed {TMP}.\n")
-		Build.StreamUnlock()
 		Output.Write(f"{C_EMPHASIS}Build completed in {time.time() - startTime:.4f} seconds.\n")
 
 	def IsDuplicateAllowed(path):
 		return (os.path.basename(path) in ALLOWED_DUPLICATES)
-
-	def StreamLock():
-		Path.touch(STREAM_LOCK)
-
-	def StreamUnlock():
-		if (not os.path.exists(join(".", STREAM_LOCK))):
-			return
-		os.remove(STREAM_LOCK)
