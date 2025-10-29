@@ -10,6 +10,7 @@ from tools.Output import Output
 from tools.Constants import *
 
 class Build:
+	@staticmethod
 	def CheckMissingDependencies(config):
 		if (len(config["Dependencies"]) > 0):
 			Output.Write(f"{C_PRIMARY}Dependencies: [\n")
@@ -31,6 +32,7 @@ class Build:
 			Output.Write(f"{C_PRIMARY}Dependencies: []\n")
 			Output.Write(f"{C_WARN}No git dependencies found, proceeding.\n")
 
+	@staticmethod
 	def Setup(config):
 		Output.Write(f"{C_EMPHASIS}Performing first-time setup...\n")
 		lib = join(".", LIB)
@@ -56,6 +58,7 @@ class Build:
 				f"\nThis file marks {SDK_NAME} setup completion.")
 		Output.Write(f"{C_GOOD}Setup complete.\n")
 
+	@staticmethod
 	def UpdateSource(path, config):
 		subprocess.run(["git", "fetch"], cwd=path, text=True, capture_output=True)
 		branch = subprocess.run(["git", "rev-parse", "--abbrev-ref", "HEAD"], cwd=path, text=True, capture_output=True)
@@ -83,6 +86,7 @@ class Build:
 		else:
 			Output.Write(f"{C_WARN}\tUpdate: {path} is {count} commits behind HEAD.\n")
 
+	@staticmethod
 	def ShouldCheckDependencies(config, update=False):
 		if (config["DependencyCheckFrequency"] == "on_build"):
 			return (True)
@@ -97,6 +101,7 @@ class Build:
 				Shell.SetTime(updateFile)
 			return (True)
 
+	@staticmethod
 	def GetSource(path, config):
 		const = join(path, "tools", "Constants.py")
 		if (os.path.exists(const)):
@@ -135,6 +140,7 @@ class Build:
 		# 	Output.Write(f"{C_WARN}{path} {script} output: {result.stderr+result.stdout}\n")
 		return (src)
 
+	@staticmethod
 	def GetSources(config):
 		Output.Write(f"{C_PRIMARY}Getting sources from lib\\...\n")
 		if ((config["NotifyOutdatedDependencies"] or config["AutoUpdateDependencies"]) and Build.ShouldCheckDependencies(config, False)):
@@ -149,6 +155,7 @@ class Build:
 				sources.append(src)
 		return (sources)
 
+	@staticmethod
 	def Cleanup(config):
 		Output.Write(f"{C_EMPHASIS}Performing cleanup...\n")
 		submodules = str.splitlines(subprocess.run(["git", "config", "--file", ".gitmodules", "--get-regexp", "path"], text=True, capture_output=True).stdout)
@@ -168,6 +175,7 @@ class Build:
 				Output.Write(f"{C_PRIMARY}\tSubmodule {path} still exists in lib, skipping.\n")
 		Output.Write(f"{C_EMPHASIS}Cleanup finished.\n")
 
+	@staticmethod
 	def Build(sources):
 		Output.Write(f"{C_EMPHASIS}Building...\n")
 		startTime = time.time()
@@ -218,8 +226,10 @@ class Build:
 		Output.Write(f"{C_PRIMARY}Removed {TMP}.\n")
 		Output.Write(f"{C_EMPHASIS}Build completed in {time.time() - startTime:.4f} seconds.\n")
 
+	@staticmethod
 	def UpdateBuildTree(new, build):
 		pass
 
+	@staticmethod
 	def IsDuplicateAllowed(path):
 		return (os.path.basename(path) in ALLOWED_DUPLICATES)
