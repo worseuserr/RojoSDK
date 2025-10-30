@@ -5,10 +5,12 @@ from os.path import join
 import os, ast, stat, shutil, tomllib, subprocess, time, threading
 
 class Shell:
+	@staticmethod
 	def ReadConfig(path):
 		with open(path, "rb") as file:
 			return (tomllib.load(file)["build"])
 
+	@staticmethod
 	def SplitFlags(flags):
 		result = []
 		for flag in flags:
@@ -20,6 +22,7 @@ class Shell:
 				result.append(flag)
 		return (result)
 
+	@staticmethod
 	def ClearDir(dir):
 		if (not os.path.exists(dir)):
 			Output.Write(f"{C_WARN}Tried to clear non-existant folder ({dir})\n")
@@ -35,6 +38,7 @@ class Shell:
 			if (Output.LogLevel == "verbose"):
 				Output.Write(f"{C_WARN}\tRemoved {path}\n")
 
+	@staticmethod
 	def SafeClearDir(dir):
 		if (not os.path.exists(dir)):
 			Output.Write(f"{C_WARN}Tried to clear non-existant folder ({dir})\n")
@@ -53,6 +57,7 @@ class Shell:
 			if (Output.LogLevel == "verbose"):
 				Output.Write(f"{C_WARN}\tRemoved {path}\n")
 
+	@staticmethod
 	def CopyDir(dir, target):
 		if (not os.path.exists(target)):
 			Output.Write(f"{C_WARN}Tried to copy to non-existant folder ({dir} -> {target})\n")
@@ -67,6 +72,7 @@ class Shell:
 			if (Output.LogLevel == "verbose"):
 				Output.Write(f"{C_WARN}\tCopied {src} to {dst}\n")
 
+	@staticmethod
 	def RemoveReadonly(func, path, exc):
 		os.chmod(path, stat.S_IWRITE)
 		if (Output.LogLevel == "verbose"):
@@ -74,6 +80,7 @@ class Shell:
 		func(path)
 
 	# Returns 0 on success, 1 if present, 2 if present but not a git repository
+	@staticmethod
 	def NewSubmodule(dep):
 		pair = str.split(dep, '@')
 		name = str.split(pair[0], '/')[1]
@@ -101,6 +108,7 @@ class Shell:
 		subprocess.run(["git", "restore", "--staged", join(LIB, name)], capture_output=True, text=True)
 		return (0)
 
+	@staticmethod
 	def ClearSubmodule(relpath):
 		if (os.path.isdir(join(".", ".git", "modules", relpath))):
 			shutil.rmtree(join(".", ".git", "modules", relpath), onexc=Shell.RemoveReadonly)
@@ -116,6 +124,7 @@ class Shell:
 		if (os.path.isfile(join(".", relpath, ".git"))):
 			os.remove(join(".", relpath, ".git"))
 
+	@staticmethod
 	def GetConstants(path):
 		with open(path, "r") as f:
 			tree = ast.parse(f.read(), filename=path)
@@ -128,6 +137,7 @@ class Shell:
 							constants[target.id] = node.value.value
 		return (constants)
 
+	@staticmethod
 	def PrettyRun(func, prepend="", **kwargs):
 		def animate():
 			nonlocal done
@@ -148,21 +158,25 @@ class Shell:
 		Output.WriteInPlace(f"{prepend}  ") # Clear bar
 		return (result)
 
+	@staticmethod
 	def ChangeRoot(fullpath, newroot):
 		parts = fullpath.split(os.sep)
 		if (len(parts) > 1):
 			parts[1] = newroot
 		return (os.sep.join(parts))
 
+	@staticmethod
 	def Compare(file1, file2):
 		with open(file1, 'r') as f1, open(file2, 'r') as f2:
 			return (f1.read() == f2.read())
 		return (True)
 
+	@staticmethod
 	def SetTime(file):
 		with open(file, "w") as f:
 			f.write(datetime.now().isoformat())
 
+	@staticmethod
 	def GetTime(file):
 		with open(file, "r") as f:
 			return (datetime.fromisoformat(f.read().strip()))
