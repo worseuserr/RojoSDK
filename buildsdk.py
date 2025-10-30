@@ -16,7 +16,7 @@ NAME=		"RojoSDK-v.zip"
 SDK=		"sdk"
 SRC=		"src"
 SDKMETA=	".sdk"
-PROJECTFILE="build.project.json"
+PROJECTFILE="default.project.json"
 FOLDERS_TO_CREATE=	["lib", "src", "build", SDKMETA]
 FILES_TO_SDKMETA=	["LICENSE", "README.md"]
 
