@@ -148,6 +148,17 @@ class Shell:
 		Output.WriteInPlace(f"{prepend}  ") # Clear bar
 		return (result)
 
+	def ChangeRoot(fullpath, newroot):
+		parts = fullpath.split(os.sep)
+		if (len(parts) > 1):
+			parts[1] = newroot
+		return (os.sep.join(parts))
+
+	def Compare(file1, file2):
+		with open(file1, 'r') as f1, open(file2, 'r') as f2:
+			return (f1.read() == f2.read())
+		return (True)
+
 	def SetTime(file):
 		with open(file, "w") as f:
 			f.write(datetime.now().isoformat())
