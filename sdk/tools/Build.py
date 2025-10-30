@@ -229,7 +229,7 @@ class Build:
 	# Removes files in target that don't exist in new
 	@staticmethod
 	def CleanPathTree(new, target):
-		for root, _, files in os.walk(target):
+		for root, dirs, files in os.walk(target, topdown=False):
 			for file in files:
 				full = join(root, file)
 				base = os.path.basename(new)
@@ -238,6 +238,13 @@ class Build:
 					if (Output.LogLevel == "verbose"):
 						Output.Write(f"REMOVE: {full}\n")
 					os.remove(full)
+			# Empty dirs
+			for dir in dirs:
+				full = join(root, dir)
+				if (not os.listdir(full)):
+					if (Output.LogLevel == "verbose"):
+						Output.Write(f"REMOVE DIR: {full}\n")
+					os.rmdir(full)
 
 	# Replaces changed files and creates new ones
 	@staticmethod
