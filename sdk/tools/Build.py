@@ -216,19 +216,50 @@ class Build:
 					if (Output.LogLevel == "verbose"):
 						Output.Write(f"{C_PRIMARY}\t\tCopied: {srcPath} to {destPath}\n")
 			Output.WriteInPlace(f"{C_PRIMARY}\tProcessing: {sourceRoot}... {C_GOOD}OK{" " * 10}\n")
-		Output.Write(f"{C_PRIMARY}Clearing build folder...")
-		Shell.ClearDir(build)
-		Output.WriteInPlace(f"{C_PRIMARY}Clearing build folder... {C_GOOD} OK\n")
+		Output.Write(f"{C_PRIMARY}Cleaning build tree...")
+		Build.CleanPathTree(tmp, build)
+		Output.WriteInPlace(f"{C_PRIMARY}Cleaning build tree... {C_GOOD} OK\n")
 		Output.Write(f"{C_PRIMARY}Updating build tree...")
-		Build.UpdateBuildTree(tmp, build)
+		Build.UpdatePathTree(tmp, build)
 		Output.WriteInPlace(f"{C_PRIMARY}Updating build tree... {C_GOOD} OK\n")
 		shutil.rmtree(tmp, onexc=Shell.RemoveReadonly)
 		Output.Write(f"{C_PRIMARY}Removed {TMP}.\n")
 		Output.Write(f"{C_EMPHASIS}Build completed in {time.time() - startTime:.4f} seconds.\n")
 
+	# Removes files in target that don't exist in new
 	@staticmethod
-	def UpdateBuildTree(new, build):
-		pass
+	def CleanPathTree(new, target):
+		for root, _, files in os.walk(target):
+			for file in files:
+				full = join(root, file)
+				base = os.path.basename(new)
+				newpath = Shell.ChangeRoot(full, base)
+				if (not os.path.exists(newpath)):
+					if (Output.LogLevel == "verbose"):
+						Output.Write(f"REMOVE: {full}\n")
+					os.remove(full)
+
+	# Replaces changed files and creates new ones
+	@staticmethod
+	def UpdatePathTree(new, target):
+		for root, _, files in os.walk(new):
+			for file in files:
+				full = join(root, file)
+				base = os.path.basename(target)
+				targetpath = Shell.ChangeRoot(full, base)
+				if (not os.path.exists(targetpath)):
+					os.makedirs(os.path.dirname(targetpath), exist_ok=True)
+					shutil.copy2(full, targetpath)
+					if (Output.LogLevel == "verbose"):
+						Output.Write(f"CREATE: {targetpath}\n")
+					continue
+				# If exists in target
+				if (Shell.Compare(full, targetpath)):
+					continue
+				with open(targetpath, 'w') as dest, open(full, 'r') as src:
+					if (Output.LogLevel == "verbose"):
+						Output.Write(f"OVERWRITE: {targetpath}\n")
+					dest.write(src.read())
 
 	@staticmethod
 	def IsDuplicateAllowed(path):
