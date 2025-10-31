@@ -16,7 +16,7 @@ NAME=		"RojoSDK-v.zip"
 SDK=		"sdk"
 SRC=		"src"
 SDKMETA=	".sdk"
-PROJECTFILE="build.project.json"
+PROJECTFILE="default.project.json"
 FOLDERS_TO_CREATE=	["lib", "src", "build", SDKMETA]
 FILES_TO_SDKMETA=	["LICENSE", "README.md"]
 
@@ -95,7 +95,7 @@ with open(join(".", SDK, PROJECTFILE)) as file:
 	project = json.load(file)
 
 # This only recurses 1 layer deep
-# Copies subdirectories in build.project.json
+# Copies subdirectories in default.project.json
 for key, value in project["tree"].items():
 	if (not isinstance(value, dict)):
 		continue

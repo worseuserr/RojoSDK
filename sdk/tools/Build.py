@@ -10,6 +10,7 @@ from tools.Output import Output
 from tools.Constants import *
 
 class Build:
+	@staticmethod
 	def CheckMissingDependencies(config):
 		if (len(config["Dependencies"]) > 0):
 			Output.Write(f"{C_PRIMARY}Dependencies: [\n")
@@ -31,6 +32,7 @@ class Build:
 			Output.Write(f"{C_PRIMARY}Dependencies: []\n")
 			Output.Write(f"{C_WARN}No git dependencies found, proceeding.\n")
 
+	@staticmethod
 	def Setup(config):
 		Output.Write(f"{C_EMPHASIS}Performing first-time setup...\n")
 		lib = join(".", LIB)
@@ -56,6 +58,7 @@ class Build:
 				f"\nThis file marks {SDK_NAME} setup completion.")
 		Output.Write(f"{C_GOOD}Setup complete.\n")
 
+	@staticmethod
 	def UpdateSource(path, config):
 		subprocess.run(["git", "fetch"], cwd=path, text=True, capture_output=True)
 		branch = subprocess.run(["git", "rev-parse", "--abbrev-ref", "HEAD"], cwd=path, text=True, capture_output=True)
@@ -83,6 +86,7 @@ class Build:
 		else:
 			Output.Write(f"{C_WARN}\tUpdate: {path} is {count} commits behind HEAD.\n")
 
+	@staticmethod
 	def ShouldCheckDependencies(config, update=False):
 		if (config["DependencyCheckFrequency"] == "on_build"):
 			return (True)
@@ -97,6 +101,7 @@ class Build:
 				Shell.SetTime(updateFile)
 			return (True)
 
+	@staticmethod
 	def GetSource(path, config):
 		const = join(path, "tools", "Constants.py")
 		if (os.path.exists(const)):
@@ -135,6 +140,7 @@ class Build:
 		# 	Output.Write(f"{C_WARN}{path} {script} output: {result.stderr+result.stdout}\n")
 		return (src)
 
+	@staticmethod
 	def GetSources(config):
 		Output.Write(f"{C_PRIMARY}Getting sources from lib\\...\n")
 		if ((config["NotifyOutdatedDependencies"] or config["AutoUpdateDependencies"]) and Build.ShouldCheckDependencies(config, False)):
@@ -149,6 +155,7 @@ class Build:
 				sources.append(src)
 		return (sources)
 
+	@staticmethod
 	def Cleanup(config):
 		Output.Write(f"{C_EMPHASIS}Performing cleanup...\n")
 		submodules = str.splitlines(subprocess.run(["git", "config", "--file", ".gitmodules", "--get-regexp", "path"], text=True, capture_output=True).stdout)
@@ -168,6 +175,7 @@ class Build:
 				Output.Write(f"{C_PRIMARY}\tSubmodule {path} still exists in lib, skipping.\n")
 		Output.Write(f"{C_EMPHASIS}Cleanup finished.\n")
 
+	@staticmethod
 	def Build(sources):
 		Output.Write(f"{C_EMPHASIS}Building...\n")
 		startTime = time.time()
@@ -208,25 +216,58 @@ class Build:
 					if (Output.LogLevel == "verbose"):
 						Output.Write(f"{C_PRIMARY}\t\tCopied: {srcPath} to {destPath}\n")
 			Output.WriteInPlace(f"{C_PRIMARY}\tProcessing: {sourceRoot}... {C_GOOD}OK{" " * 10}\n")
-		Build.StreamLock()
-		Output.Write(f"{C_PRIMARY}Clearing build folder...")
-		Shell.ClearDir(build)
-		Output.WriteInPlace(f"{C_PRIMARY}Clearing build folder... {C_GOOD} OK\n")
-		Output.Write(f"{C_PRIMARY}Copying new files...")
-		Shell.CopyDir(tmp, build)
-		Output.WriteInPlace(f"{C_PRIMARY}Copying new files... {C_GOOD} OK\n")
+		Output.Write(f"{C_PRIMARY}Cleaning build tree...")
+		Build.CleanPathTree(tmp, build)
+		Output.WriteInPlace(f"{C_PRIMARY}Cleaning build tree... {C_GOOD} OK\n")
+		Output.Write(f"{C_PRIMARY}Updating build tree...")
+		Build.UpdatePathTree(tmp, build)
+		Output.WriteInPlace(f"{C_PRIMARY}Updating build tree... {C_GOOD} OK\n")
 		shutil.rmtree(tmp, onexc=Shell.RemoveReadonly)
 		Output.Write(f"{C_PRIMARY}Removed {TMP}.\n")
-		Build.StreamUnlock()
 		Output.Write(f"{C_EMPHASIS}Build completed in {time.time() - startTime:.4f} seconds.\n")
 
+	# Removes files in target that don't exist in new
+	@staticmethod
+	def CleanPathTree(new, target):
+		for root, dirs, files in os.walk(target, topdown=False):
+			for file in files:
+				full = join(root, file)
+				base = os.path.basename(new)
+				newpath = Shell.ChangeRoot(full, base)
+				if (not os.path.exists(newpath)):
+					if (Output.LogLevel == "verbose"):
+						Output.Write(f"REMOVE: {full}\n")
+					os.remove(full)
+			# Empty dirs
+			for dir in dirs:
+				full = join(root, dir)
+				if (not os.listdir(full)):
+					if (Output.LogLevel == "verbose"):
+						Output.Write(f"REMOVE DIR: {full}\n")
+					os.rmdir(full)
+
+	# Replaces changed files and creates new ones
+	@staticmethod
+	def UpdatePathTree(new, target):
+		for root, _, files in os.walk(new):
+			for file in files:
+				full = join(root, file)
+				base = os.path.basename(target)
+				targetpath = Shell.ChangeRoot(full, base)
+				if (not os.path.exists(targetpath)):
+					os.makedirs(os.path.dirname(targetpath), exist_ok=True)
+					shutil.copy2(full, targetpath)
+					if (Output.LogLevel == "verbose"):
+						Output.Write(f"CREATE: {targetpath}\n")
+					continue
+				# If exists in target
+				if (Shell.Compare(full, targetpath)):
+					continue
+				with open(targetpath, 'w') as dest, open(full, 'r') as src:
+					if (Output.LogLevel == "verbose"):
+						Output.Write(f"OVERWRITE: {targetpath}\n")
+					dest.write(src.read())
+
+	@staticmethod
 	def IsDuplicateAllowed(path):
 		return (os.path.basename(path) in ALLOWED_DUPLICATES)
-
-	def StreamLock():
-		Path.touch(STREAM_LOCK)
-
-	def StreamUnlock():
-		if (not os.path.exists(join(".", STREAM_LOCK))):
-			return
-		os.remove(STREAM_LOCK)
