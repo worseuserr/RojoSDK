@@ -1,24 +1,24 @@
 # RojoSDK
 
-A simple, dependency-aware SDK for [**Rojo+**](https://github.com/worseuserr/RojoPlus) projects.
+A simple, dependency-aware SDK for [**Rojo**](https://github.com/rojo-rbx/rojo) projects.
 
 [![License](https://img.shields.io/badge/license-MIT-blue)](./LICENSE)
-[![Version](https://img.shields.io/badge/version-1.3.0-informational)](./sdk/build.config.toml)
+[![Version](https://img.shields.io/badge/version-1.4.0-informational)](./sdk/build.config.toml)
 
 **RojoSDK** simplifies project development by managing dependencies as Git submodules and merging all source files into a single, clean `build/` directory, keeping your work-in-progress code separate from the live version.
 
 ## Key Features
 
--   **Decoupled Workflow:** Work safely in `src/` while **Rojo+** streams the stable `build/` directory. This prevents half-written or broken code from affecting your running instance.
+-   **Decoupled Workflow:** Work safely in `src/` while **Rojo** streams the stable `build/` directory. This prevents half-written or broken code from affecting your running instance.
 -   **Unified Build Directory:** Merges your project's `src/` with the source folders of all dependencies into a single `build/` output.
 -   **Git Submodule Dependencies:** Manages project dependencies declared in `build.config.toml` as Git submodules in the `lib/` directory.
 -   **Recursive Builds:** Automatically detects and builds dependencies that also use **RojoSDK**, ensuring you always use their latest build output.
 -   **Declarative Configuration:** All build settings, dependencies, and update policies are managed in a simple `build.config.toml` file.
 -   **Simple CLI:** A straightforward command-line interface for building, cleaning, and managing your project.
--   **Multi-platform:** Natively supports any platform with **Rojo+**, **Python 3.12+** and **Git** installed.
+-   **Multi-platform:** Natively supports any platform with **Rojo**, **Python 3.12+** and **Git** installed.
 
 ## Requirements
--	[**Rojo+**](https://github.com/worseuserr/RojoPlus) - A fork of [**Rojo**](https://github.com/rojo-rbx/rojo) which adds a feature required for the building process to work.
+-	[**Rojo**](https://github.com/rojo-rbx/rojo).
 -	[**Git**](https://git-scm.com/) - Will otherwise error when checking libs with git, this may become optional in the future.
 -	[**Python3.12+**](https://www.python.org/) - For the scripts to work.
 
@@ -39,7 +39,7 @@ A simple, dependency-aware SDK for [**Rojo+**](https://github.com/worseuserr/Roj
 
 4.  **Start developing!**
     Your project source code goes in `src/`, and the combined output will appear in `build/` after every run.
-    Serve `build.project.json` to **Rojo+** and all your build files will be synced.
+    Serve `build.project.json` to **Rojo** and all your build files will be synced.
 
 ## How It Works
 
